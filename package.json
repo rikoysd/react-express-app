@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/rikoysd/react-express-app/issues"
   },
-  "homepage": "https://github.com/rikoysd/react-express-app#readme"
+  "homepage": "https://github.com/rikoysd/react-express-app#readme",
+  "devDependencies": {
+    "express": "^4.18.1"
+  }
 }
