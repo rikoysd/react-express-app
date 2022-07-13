@@ -16,18 +16,23 @@ export const RegisterFood: FC = () => {
   const [purchaseDate, setPurchaseDate] = useState<Date | null>(new Date());
   // 名前
   const [name, setName] = useState<string>("");
+  // 名前のエラー
+  const [nameError, setNameError] = useState<string>("");
   // 数量
   const [quantity, setQuantity] = useState<number>(0);
   // 数量の選択
   const [qSelect, setQSelect] = useState<string>("1");
   // 賞味期限・消費期限
   const [bestBefore, setBestBefore] = useState<Date | null>(new Date());
+  // エラーフラグ
+  const [flag, setFlag] = useState<boolean>(false);
 
   /**
    * 購入日を選択.
    * @param e
    */
   const onChangePurchaseDate = (newValue: Date | null) => {
+    // console.log(newValue);
     setPurchaseDate(newValue);
   };
 
@@ -78,7 +83,16 @@ export const RegisterFood: FC = () => {
    * 食材を登録する.
    */
   const onClickRegisterFood = () => {
-    console.log("call");
+    // エラー処理
+    if (purchaseDate === null) {
+      setPurchaseDate(new Date());
+    }
+    if (name === "") {
+      setNameError("食材名を入力してください");
+      setFlag(true);
+    }
+
+    
   };
 
   return (
@@ -95,7 +109,8 @@ export const RegisterFood: FC = () => {
         </label>
       </LocalizationProvider>
       <label htmlFor="name">
-        <div>食材名</div>
+        <div>食材名（必須）</div>
+        <div>{nameError}</div>
         <input type="text" id="name" value={name} onChange={onChangeName} />
       </label>
       <div>数量</div>
