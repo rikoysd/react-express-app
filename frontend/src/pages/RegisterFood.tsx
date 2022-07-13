@@ -1,9 +1,113 @@
-import { FC } from "react";
+import { ChangeEvent, FC, useState } from "react";
+import TextField from "@mui/material/TextField";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import {
+  FormControlLabel,
+  OutlinedInput,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
 
 export const RegisterFood: FC = () => {
+  // 購入日
+  const [purchaseDate, setPurchaseDate] = useState<Date | null>(new Date());
+  // 名前
+  const [name, setName] = useState<string>("");
+  // 数量
+  const [quantity, setQuantity] = useState<number>(0);
+  // 数量の選択
+  const [qSelect, setQSelect] = useState<string>("1");
+  // 賞味期限・消費期限
+  const [bestBefore, setBestBefore] = useState<Date | null>(new Date());
+
+  /**
+   * 購入日を選択.
+   * @param e
+   */
+  const onChangePurchaseDate = (newValue: Date | null) => {
+    setPurchaseDate(newValue);
+  };
+
+  /**
+   * 食材名の入力.
+   * @param e
+   */
+  const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
+  /**
+   * 数量の選択.
+   * @param e
+   */
+  const onChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+    setQSelect(e.target.value);
+  };
+
+  /**
+   * 賞味期限の入力.
+   * @param newValue
+   */
+  const onChangeBestBefore = (newValue: Date | null) => {
+    setBestBefore(newValue);
+  };
+
   return (
     <div>
-      <div>食材</div>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <label htmlFor="purchaseDate">
+          <div>購入日</div>
+          <DesktopDatePicker
+            inputFormat="MM/dd/yyyy"
+            value={purchaseDate}
+            onChange={onChangePurchaseDate}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </label>
+      </LocalizationProvider>
+      <label htmlFor="name">
+        <div>食材名</div>
+        <input type="text" id="name" value={name} onChange={onChangeName} />
+      </label>
+      <div>数量</div>
+      <RadioGroup defaultValue="1" onChange={onChangeQuantity}>
+        <FormControlLabel
+          value="1"
+          control={<Radio></Radio>}
+          label="個数"
+          checked={qSelect === "1"}
+        ></FormControlLabel>
+        <FormControlLabel
+          value="2"
+          control={<Radio></Radio>}
+          label="グラム数"
+          checked={qSelect === "2"}
+        ></FormControlLabel>
+      </RadioGroup>
+      <OutlinedInput
+        id="outlined-basic"
+        endAdornment={<InputAdornment position="end">個</InputAdornment>}
+        size="small"
+      />
+      <OutlinedInput
+        id="outlined-basic"
+        endAdornment={<InputAdornment position="end">ｇ</InputAdornment>}
+        size="small"
+      />
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <label htmlFor="purchaseDate">
+          <div>賞味期限・消費期限</div>
+          <DesktopDatePicker
+            inputFormat="MM/dd/yyyy"
+            value={bestBefore}
+            onChange={onChangeBestBefore}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </label>
+      </LocalizationProvider>
     </div>
   );
 };
