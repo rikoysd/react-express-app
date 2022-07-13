@@ -43,8 +43,16 @@ export const RegisterFood: FC = () => {
    * 数量の選択.
    * @param e
    */
-  const onChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeQSelect = (e: ChangeEvent<HTMLInputElement>) => {
     setQSelect(e.target.value);
+  };
+
+  /**
+   * 数量の入力.
+   * @param e
+   */
+  const onChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuantity(Number(e.target.value));
   };
 
   /**
@@ -53,6 +61,24 @@ export const RegisterFood: FC = () => {
    */
   const onChangeBestBefore = (newValue: Date | null) => {
     setBestBefore(newValue);
+  };
+
+  /**
+   * 入力項目をクリアにする.
+   */
+  const onClickClear = () => {
+    setPurchaseDate(new Date());
+    setName("");
+    setQSelect("1");
+    setQuantity(0);
+    setBestBefore(new Date());
+  };
+
+  /**
+   * 食材を登録する.
+   */
+  const onClickRegisterFood = () => {
+    console.log("call");
   };
 
   return (
@@ -73,7 +99,7 @@ export const RegisterFood: FC = () => {
         <input type="text" id="name" value={name} onChange={onChangeName} />
       </label>
       <div>数量</div>
-      <RadioGroup defaultValue="1" onChange={onChangeQuantity}>
+      <RadioGroup defaultValue="1" onChange={onChangeQSelect}>
         <FormControlLabel
           value="1"
           control={<Radio></Radio>}
@@ -87,16 +113,28 @@ export const RegisterFood: FC = () => {
           checked={qSelect === "2"}
         ></FormControlLabel>
       </RadioGroup>
-      <OutlinedInput
-        id="outlined-basic"
-        endAdornment={<InputAdornment position="end">個</InputAdornment>}
-        size="small"
-      />
-      <OutlinedInput
-        id="outlined-basic"
-        endAdornment={<InputAdornment position="end">ｇ</InputAdornment>}
-        size="small"
-      />
+      {(() => {
+        if (qSelect === "1") {
+          return (
+            <OutlinedInput
+              id="outlined-basic"
+              endAdornment={<InputAdornment position="end">個</InputAdornment>}
+              size="small"
+              value={quantity}
+              onChange={onChangeQuantity}
+            />
+          );
+        } else {
+          return (
+            <OutlinedInput
+              id="outlined-basic"
+              endAdornment={<InputAdornment position="end">ｇ</InputAdornment>}
+              size="small"
+              value={quantity}
+            />
+          );
+        }
+      })()}
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <label htmlFor="purchaseDate">
           <div>賞味期限・消費期限</div>
@@ -108,6 +146,10 @@ export const RegisterFood: FC = () => {
           />
         </label>
       </LocalizationProvider>
+      <div>
+        <button onClick={onClickClear}>クリア</button>
+        <button onClick={onClickRegisterFood}>食材を登録する</button>
+      </div>
     </div>
   );
 };
