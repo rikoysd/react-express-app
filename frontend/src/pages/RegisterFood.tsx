@@ -13,6 +13,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import axios from "axios";
 import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import { format } from "date-fns";
+import { FoodList } from "../components/FoodList";
 
 export const RegisterFood: FC = () => {
   // 購入日
@@ -32,6 +33,7 @@ export const RegisterFood: FC = () => {
   const { foodList, getFoodList } = useFetchRefrigerator();
 
   useEffect(() => {
+    console.log("call");
     getFoodList();
   }, []);
 
@@ -89,7 +91,7 @@ export const RegisterFood: FC = () => {
   /**
    * 食材を登録する.
    */
-  const onClickRegisterFood = () => {
+  const onClickRegisterFood = async () => {
     // エラー処理
     if (purchaseDate === null) {
       setPurchaseDate(new Date());
@@ -115,7 +117,7 @@ export const RegisterFood: FC = () => {
     const newPurchaseDate = format(Number(purchaseDate), "yyyy-MM-dd");
     const newBestBefore = format(Number(bestBefore), "yyyy-MM-dd");
 
-    axios
+    await axios
       .post("http://localhost:3001/api/post/foodList", {
         id: id,
         name: name,
@@ -127,11 +129,21 @@ export const RegisterFood: FC = () => {
       .then((response) => {
         console.log(response);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // 入力項目をクリアにする
+    setPurchaseDate(new Date());
+    setName("");
+    setQSelect("1");
+    setQuantity(0);
+    setBestBefore(new Date());
   };
 
   return (
     <div>
+      <FoodList></FoodList>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <label htmlFor="purchaseDate">
           <div>購入日</div>
@@ -181,6 +193,7 @@ export const RegisterFood: FC = () => {
               endAdornment={<InputAdornment position="end">ｇ</InputAdornment>}
               size="small"
               value={quantity}
+              onChange={onChangeQuantity}
             />
           );
         }
