@@ -6,7 +6,7 @@ export const useFetchRefrigerator = () => {
   const [foodList, setFoodList] = useState<Refrigerator[]>([]);
 
   const getFoodList = () => {
-    axios.get("http://localhost:3001/api/foodList").then((response) => {
+    axios.get("http://localhost:3001/api/get/foodList").then((response) => {
       setFoodList(response.data);
     });
   };

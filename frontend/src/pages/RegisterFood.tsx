@@ -12,6 +12,7 @@ import {
 import InputAdornment from "@mui/material/InputAdornment";
 import axios from "axios";
 import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
+import { format } from "date-fns";
 
 export const RegisterFood: FC = () => {
   // 購入日
@@ -99,15 +100,29 @@ export const RegisterFood: FC = () => {
     }
 
     // id採番
+    let id = 0;
+    let idList = [];
+    if (foodList.length === 0) {
+      id = 1;
+    } else {
+      for (let food of foodList) {
+        idList.push(food.foodId);
+      }
+      id = Math.max(...idList) + 1;
+    }
+
+    // DBに登録する用の型に変換
+    const newPurchaseDate = format(Number(purchaseDate), "yyyy-MM-dd");
+    const newBestBefore = format(Number(bestBefore), "yyyy-MM-dd");
 
     axios
-      .post("http://localhost:3001/api", {
-        id: -1,
+      .post("http://localhost:3001/api/post/foodList", {
+        id: id,
         name: name,
-        purchaseDate: purchaseDate,
+        purchaseDate: newPurchaseDate,
         qSelect: Number(qSelect),
         quantity: quantity,
-        bestBefore: bestBefore,
+        bestBefore: newBestBefore,
       })
       .then((response) => {
         console.log(response);
@@ -121,7 +136,7 @@ export const RegisterFood: FC = () => {
         <label htmlFor="purchaseDate">
           <div>購入日</div>
           <DesktopDatePicker
-            inputFormat="MM/dd/yyyy"
+            inputFormat="yyyy/MM/dd"
             value={purchaseDate}
             onChange={onChangePurchaseDate}
             renderInput={(params) => <TextField {...params} />}
@@ -174,7 +189,7 @@ export const RegisterFood: FC = () => {
         <label htmlFor="purchaseDate">
           <div>賞味期限・消費期限</div>
           <DesktopDatePicker
-            inputFormat="MM/dd/yyyy"
+            inputFormat="yyyy/MM/dd"
             value={bestBefore}
             onChange={onChangeBestBefore}
             renderInput={(params) => <TextField {...params} />}
