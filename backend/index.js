@@ -25,12 +25,19 @@ connections.connect((error) => {
   console.log("Connected");
 });
 
-// 取得
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+// 食材一覧を取得する
+app.get("/api/foodList", (req, res) => {
+  const sqlSelect = "SELECT * FROM foodlist";
+  // query... mysqlにデータを問い合わせるメソッド
+  connections.query(sqlSelect, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
 });
 
-// 送信
+// 食材を登録する
 app.post("/api", (req, res) => {
   console.log(req.body);
   res.send("Received POST Data!");

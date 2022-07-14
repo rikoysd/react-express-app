@@ -1,0 +1,15 @@
+import axios from "axios";
+import { useState } from "react";
+import type { Refrigerator } from "../types/refrigerator";
+
+export const useFetchRefrigerator = () => {
+  const [foodList, setFoodList] = useState<Refrigerator[]>([]);
+
+  const getFoodList = () => {
+    axios.get("http://localhost:3001/api/foodList").then((response) => {
+      setFoodList(response.data);
+    });
+  };
+
+  return { foodList, getFoodList };
+};

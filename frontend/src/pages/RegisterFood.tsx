@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import axios from "axios";
+import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 
 export const RegisterFood: FC = () => {
   // 購入日
@@ -27,13 +28,17 @@ export const RegisterFood: FC = () => {
   const [bestBefore, setBestBefore] = useState<Date | null>(new Date());
   // エラーフラグ
   const [flag, setFlag] = useState<boolean>(false);
+  const { foodList, getFoodList } = useFetchRefrigerator();
+
+  useEffect(() => {
+    getFoodList();
+  }, []);
 
   /**
    * 購入日を選択.
    * @param e
    */
   const onChangePurchaseDate = (newValue: Date | null) => {
-    // console.log(newValue);
     setPurchaseDate(newValue);
   };
 
@@ -92,6 +97,8 @@ export const RegisterFood: FC = () => {
       setNameError("食材名を入力してください");
       setFlag(true);
     }
+
+    // id採番
 
     axios
       .post("http://localhost:3001/api", {
