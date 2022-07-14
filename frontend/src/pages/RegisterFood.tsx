@@ -10,6 +10,7 @@ import {
   RadioGroup,
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
+import axios from "axios";
 
 export const RegisterFood: FC = () => {
   // 購入日
@@ -92,7 +93,19 @@ export const RegisterFood: FC = () => {
       setFlag(true);
     }
 
-    
+    axios
+      .post("http://localhost:3001/api", {
+        id: -1,
+        name: name,
+        purchaseDate: purchaseDate,
+        qSelect: Number(qSelect),
+        quantity: quantity,
+        bestBefore: bestBefore,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
