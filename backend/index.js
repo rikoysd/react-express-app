@@ -66,6 +66,19 @@ app.post("/api/post/foodList", (req, res) => {
   );
 });
 
+// 食材の削除
+app.post("/api/delete/foodList", (req, res) => {
+  const id = req.body.id;
+  const sql = "DELETE FROM foodlist WHERE foodId=?";
+  connections.query(sql, id, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    console.log(result);
+    res.send("Delete Date!");
+  });
+});
+
 app.listen(port, () => {
   console.log(`listening on ${port}`);
 });
