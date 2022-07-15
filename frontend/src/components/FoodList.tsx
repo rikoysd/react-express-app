@@ -23,11 +23,10 @@ export const FoodList: FC<Props> = (props) => {
   const [checkFlag, setCheckFlag] = useState<Boolean>(false);
   // チェックした食材リスト
   const [checkedFoodList, setCheckedFoodList] = useState<Refrigerator[]>([]);
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     getFoodList();
-  }, [bestBefore, checkedFoodList, checkFlag]);
+  }, [bestBefore, checkedFoodList, checkFlag, flag]);
 
   /**
    * 編集する.
@@ -91,6 +90,7 @@ export const FoodList: FC<Props> = (props) => {
     // 配列を空にする
     setCheckedFoodList([]);
     setCheckFlag(false);
+    setFlag(false);
   }, [checkedFoodList]);
 
   return (
@@ -121,7 +121,6 @@ export const FoodList: FC<Props> = (props) => {
                   {flag && (
                     <Checkbox
                       size="small"
-                      defaultChecked={checked}
                       onChange={onChangeCheckBox(index)}
                     ></Checkbox>
                   )}
