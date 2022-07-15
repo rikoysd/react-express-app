@@ -23,10 +23,18 @@ export const FoodList: FC<Props> = (props) => {
   const [checkFlag, setCheckFlag] = useState<Boolean>(false);
   // チェックした食材リスト
   const [checkedFoodList, setCheckedFoodList] = useState<Refrigerator[]>([]);
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
-    getFoodList();
-  }, [bestBefore, checkedFoodList, checkFlag, flag]);
+    (async () => {
+      await getFoodList();
+    })();
+    if (foodList.length === 0) {
+      setMessage("食材が登録されていません");
+    } else {
+      setMessage("");
+    }
+  }, [bestBefore, checkedFoodList, checkFlag, flag, foodList]);
 
   /**
    * 編集する.
@@ -145,6 +153,7 @@ export const FoodList: FC<Props> = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div>{message}</div>
     </div>
   );
 };
