@@ -5,16 +5,19 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
-import { styled } from "@mui/material/styles";
 
-export const FoodList: FC = () => {
+type Props = {
+  bestBefore: Date | null;
+};
+
+export const FoodList: FC<Props> = (props) => {
+  const { bestBefore } = props;
   const { foodList, getFoodList } = useFetchRefrigerator();
 
   useEffect(() => {
     getFoodList();
-  }, []);
+  }, [bestBefore]);
 
   return (
     <TableContainer sx={{ width: 560 }}>
@@ -27,8 +30,8 @@ export const FoodList: FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {foodList.map((food) => (
-            <TableRow key={food.foodId}>
+          {foodList.map((food, index) => (
+            <TableRow key={index}>
               <TableCell scope="row">{food.name}</TableCell>
               {(() => {
                 if (food.qSelect === 1) {

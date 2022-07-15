@@ -34,7 +34,6 @@ export const RegisterFood: FC = () => {
   const { foodList, getFoodList } = useFetchRefrigerator();
 
   useEffect(() => {
-    console.log("call");
     getFoodList();
   }, []);
 
@@ -144,7 +143,7 @@ export const RegisterFood: FC = () => {
 
   return (
     <SContainer>
-      <FoodList></FoodList>
+      <FoodList bestBefore={bestBefore}></FoodList>
       <SForm>
         <div>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
