@@ -39,7 +39,7 @@ export const RegisterFood: FC = () => {
 
   /**
    * 購入日を選択.
-   * @param e
+   * @param new Value
    */
   const onChangePurchaseDate = (newValue: Date | null) => {
     setPurchaseDate(newValue);

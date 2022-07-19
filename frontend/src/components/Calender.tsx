@@ -1,11 +1,16 @@
 import { FC } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import { styled } from "@mui/material/styles";
 
 export const Calender: FC = () => {
   return (
-    <div>
+    <SContainer>
       <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" />
-    </div>
+    </SContainer>
   );
 };
+
+const SContainer = styled("div")({
+  width: "450px",
+});
