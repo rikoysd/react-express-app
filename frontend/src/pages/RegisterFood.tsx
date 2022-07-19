@@ -35,7 +35,7 @@ export const RegisterFood: FC = () => {
 
   useEffect(() => {
     getFoodList();
-  }, []);
+  }, [bestBefore]);
 
   /**
    * 購入日を選択.
@@ -115,6 +115,7 @@ export const RegisterFood: FC = () => {
 
     // DBに登録する用の型に変換
     const newPurchaseDate = format(Number(purchaseDate), "yyyy-MM-dd");
+
     const newBestBefore = format(Number(bestBefore), "yyyy-MM-dd");
 
     await axios

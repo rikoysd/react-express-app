@@ -9,6 +9,7 @@ import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
 import axios from "axios";
+import { addHours } from "date-fns";
 
 type Props = {
   bestBefore: Date | null;
@@ -103,6 +104,7 @@ export const FoodList: FC<Props> = (props) => {
 
   return (
     <div>
+      <div>冷蔵庫一覧</div>
       {(() => {
         if (flag === false) {
           return <button onClick={onClickEdit}>編集する</button>;
@@ -146,7 +148,7 @@ export const FoodList: FC<Props> = (props) => {
                   }
                 })()}
                 <TableCell align="right">
-                  {String(food.purchaseDate).split("T")[0]}
+                  {new Date(food.bestBefore).toLocaleString().split(" ")[0]}
                 </TableCell>
               </TableRow>
             ))}
