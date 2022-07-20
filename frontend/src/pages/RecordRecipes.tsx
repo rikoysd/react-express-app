@@ -22,6 +22,7 @@ import { FoodListModal } from "../components/FoodListModal";
 import { FoodContext } from "../provider/FoodProvider";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import { MenuOfDate } from "../components/MenuOfDate";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -86,83 +87,86 @@ export const RecordRecipes: FC = () => {
   };
 
   return (
-    <SContainer>
-      <Calender></Calender>
-      <div>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <label htmlFor="date">
-            <div>日付</div>
-            <DesktopDatePicker
-              inputFormat="yyyy/MM/dd"
-              value={date}
-              onChange={onChangeDate}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </label>
-        </LocalizationProvider>
-        <div>食事</div>
-        <FormControl sx={{ width: 200 }}>
-          <Select value={meal} onChange={onChangeMeal}>
-            <MenuItem value="朝食">朝食</MenuItem>
-            <MenuItem value="昼食">昼食</MenuItem>
-            <MenuItem value="夕食">夕食</MenuItem>
-            <MenuItem value="おやつ">おやつ</MenuItem>
-          </Select>
-        </FormControl>
-        <div>メニュー</div>
-        <Button variant="outlined" onClick={onClickAddMenu}>
-          追加する
-        </Button>
-        {/* {menuFlag && ( */}
-        <SMenu>
-          <div>
-            <label htmlFor="name">
-              <div>料理名</div>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={onChangeName}
+    <div>
+      <SContainer>
+        <Calender></Calender>
+        <div>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <label htmlFor="date">
+              <div>日付</div>
+              <DesktopDatePicker
+                inputFormat="yyyy/MM/dd"
+                value={date}
+                onChange={onChangeDate}
+                renderInput={(params) => <TextField {...params} />}
               />
             </label>
-          </div>
-          <div>食材</div>
+          </LocalizationProvider>
+          <div>食事</div>
+          <FormControl sx={{ width: 200 }}>
+            <Select value={meal} onChange={onChangeMeal}>
+              <MenuItem value="朝食">朝食</MenuItem>
+              <MenuItem value="昼食">昼食</MenuItem>
+              <MenuItem value="夕食">夕食</MenuItem>
+              <MenuItem value="おやつ">おやつ</MenuItem>
+            </Select>
+          </FormControl>
+          <div>メニュー</div>
+          <Button variant="outlined" onClick={onClickAddMenu}>
+            追加する
+          </Button>
+          {/* {menuFlag && ( */}
+          <SMenu>
+            <div>
+              <label htmlFor="name">
+                <div>料理名</div>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={onChangeName}
+                />
+              </label>
+            </div>
+            <div>食材</div>
+            <div>
+              <Button onClick={handleOpen}>追加する</Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <FoodListModal handleClose={handleClose}></FoodListModal>
+                </Box>
+              </Modal>
+            </div>
+            {(() => {
+              if (food?.checkedFoodList.length !== 0) {
+                return (
+                  <Stack direction="row" spacing={1}>
+                    {food?.checkedFoodList.map((food, index) => (
+                      <div key={index}>
+                        <Chip
+                          label={food.name}
+                          onDelete={() => handleDelete(index)}
+                        />
+                      </div>
+                    ))}
+                  </Stack>
+                );
+              }
+            })()}
+          </SMenu>
+          {/* )} */}
           <div>
-            <Button onClick={handleOpen}>追加する</Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style}>
-                <FoodListModal handleClose={handleClose}></FoodListModal>
-              </Box>
-            </Modal>
+            <Button variant="contained">登録する</Button>
           </div>
-          {(() => {
-            if (food?.checkedFoodList.length !== 0) {
-              return (
-                <Stack direction="row" spacing={1}>
-                  {food?.checkedFoodList.map((food, index) => (
-                    <div key={index}>
-                      <Chip
-                        label={food.name}
-                        onDelete={() => handleDelete(index)}
-                      />
-                    </div>
-                  ))}
-                </Stack>
-              );
-            }
-          })()}
-        </SMenu>
-        {/* )} */}
-        <div>
-          <Button variant="contained">登録する</Button>
         </div>
-      </div>
-    </SContainer>
+      </SContainer>
+      <MenuOfDate></MenuOfDate>
+    </div>
   );
 };
 
