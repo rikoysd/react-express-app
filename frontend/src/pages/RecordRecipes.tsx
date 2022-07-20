@@ -100,6 +100,9 @@ export const RecordRecipes: FC = () => {
             <Button variant="outlined">追加する</Button>
           </div>
         )}
+        <div>
+          <Button variant="contained">登録する</Button>
+        </div>
       </div>
     </SContainer>
   );
