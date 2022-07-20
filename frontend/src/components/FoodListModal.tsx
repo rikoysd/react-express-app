@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,8 +16,13 @@ import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
 import Button from "@mui/material/Button";
+import { FoodContext } from "../provider/FoodProvider";
 
-export const FoodListModal: FC = () => {
+type Props = {
+  handleClose: () => void;
+};
+
+export const FoodListModal: FC<Props> = (props) => {
   const { foodList, getFoodList } = useFetchRefrigerator();
   // チェックした食材リスト
   const [checkedFoodList, setCheckedFoodList] = useState<Refrigerator[]>([]);
@@ -18,6 +30,9 @@ export const FoodListModal: FC = () => {
   const [message, setMessage] = useState<string>("");
   // フラグ
   const [flag, setFlag] = useState<boolean>(false);
+  // 食材のグローバル管理
+  const food = useContext(FoodContext);
+  const { handleClose } = props;
 
   useEffect(() => {
     (async () => {
@@ -61,7 +76,8 @@ export const FoodListModal: FC = () => {
    * 選択した食材を登録する.
    */
   const onClickRegister = useCallback(() => {
-    console.log(checkedFoodList);
+    food?.setCheckedFoodList(checkedFoodList);
+    props.handleClose();
   }, [checkedFoodList]);
 
   return (

@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Calender } from "../components/Calender";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import TextField from "@mui/material/TextField";
@@ -12,6 +19,9 @@ import { styled } from "@mui/material/styles";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { FoodListModal } from "../components/FoodListModal";
+import { FoodContext } from "../provider/FoodProvider";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -25,6 +35,10 @@ export const RecordRecipes: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const food = useContext(FoodContext);
+  const [flag, setFlag] = useState<boolean>(false);
+
+  useEffect(() => {}, [flag]);
 
   /**
    * 日付を選択.
@@ -61,6 +75,16 @@ export const RecordRecipes: FC = () => {
     }
   };
 
+  /**
+   * 食材の削除
+   * @param index - インデックス
+   */
+  const handleDelete = (index: number) => {
+    food?.checkedFoodList.splice(index, 1);
+    // 食材が削除されたためフラグの値を変更
+    setFlag(true);
+  };
+
   return (
     <SContainer>
       <Calender></Calender>
@@ -89,39 +113,54 @@ export const RecordRecipes: FC = () => {
         <Button variant="outlined" onClick={onClickAddMenu}>
           追加する
         </Button>
-        {menuFlag && (
-          <SMenu>
-            <div>
-              <label htmlFor="name">
-                <div>料理名</div>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={onChangeName}
-                />
-              </label>
-            </div>
-            <div>食材</div>
-            <Button variant="outlined">追加する</Button>
-          </SMenu>
-        )}
+        {/* {menuFlag && ( */}
+        <SMenu>
+          <div>
+            <label htmlFor="name">
+              <div>料理名</div>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={onChangeName}
+              />
+            </label>
+          </div>
+          <div>食材</div>
+          <div>
+            <Button onClick={handleOpen}>追加する</Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <FoodListModal handleClose={handleClose}></FoodListModal>
+              </Box>
+            </Modal>
+          </div>
+          {(() => {
+            if (food?.checkedFoodList.length !== 0) {
+              return (
+                <Stack direction="row" spacing={1}>
+                  {food?.checkedFoodList.map((food, index) => (
+                    <div key={index}>
+                      <Chip
+                        label={food.name}
+                        onDelete={() => handleDelete(index)}
+                      />
+                    </div>
+                  ))}
+                </Stack>
+              );
+            }
+          })()}
+        </SMenu>
+        {/* )} */}
         <div>
           <Button variant="contained">登録する</Button>
         </div>
-      </div>
-      <div>
-        <Button onClick={handleOpen}>追加する</Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <FoodListModal></FoodListModal>
-          </Box>
-        </Modal>
       </div>
     </SContainer>
   );
