@@ -9,6 +9,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import { FoodListModal } from "../components/FoodListModal";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -19,6 +22,9 @@ export const RecordRecipes: FC = () => {
   const [name, setName] = useState<string>("");
   // メニューのフラグ
   const [menuFlag, setMenuFlag] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   /**
    * 日付を選択.
@@ -84,7 +90,7 @@ export const RecordRecipes: FC = () => {
           追加する
         </Button>
         {menuFlag && (
-          <div>
+          <SMenu>
             <div>
               <label htmlFor="name">
                 <div>料理名</div>
@@ -98,11 +104,24 @@ export const RecordRecipes: FC = () => {
             </div>
             <div>食材</div>
             <Button variant="outlined">追加する</Button>
-          </div>
+          </SMenu>
         )}
         <div>
           <Button variant="contained">登録する</Button>
         </div>
+      </div>
+      <div>
+        <Button onClick={handleOpen}>追加する</Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <FoodListModal></FoodListModal>
+          </Box>
+        </Modal>
       </div>
     </SContainer>
   );
@@ -111,3 +130,20 @@ export const RecordRecipes: FC = () => {
 const SContainer = styled("div")({
   display: "flex",
 });
+
+const SMenu = styled("div")({
+  border: "1px solid",
+  padding: "20px 15px",
+  margin: "10px",
+});
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+};

@@ -8,22 +8,16 @@ import TableRow from "@mui/material/TableRow";
 import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
-import axios from "axios";
+import Button from "@mui/material/Button";
 
-type Props = {
-  bestBefore: Date | null;
-};
-
-export const FoodList: FC<Props> = (props) => {
-  const { bestBefore } = props;
+export const FoodListModal: FC = () => {
   const { foodList, getFoodList } = useFetchRefrigerator();
-  // 編集ボタンのフラグ
-  const [flag, setFlag] = useState<Boolean>(false);
-  // チェックボックスのフラグ
-  const [checkFlag, setCheckFlag] = useState<Boolean>(false);
   // チェックした食材リスト
   const [checkedFoodList, setCheckedFoodList] = useState<Refrigerator[]>([]);
+  // メッセージ
   const [message, setMessage] = useState<string>("");
+  // フラグ
+  const [flag, setFlag] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -34,22 +28,7 @@ export const FoodList: FC<Props> = (props) => {
     } else {
       setMessage("");
     }
-  }, [bestBefore, checkedFoodList, checkFlag, flag, foodList]);
-
-  /**
-   * 編集する.
-   */
-  const onClickEdit = useCallback(() => {
-    setFlag(true);
-  }, []);
-
-  /**
-   * 編集をやめる.
-   */
-  const onClickFinished = useCallback(() => {
-    setFlag(false);
-    setCheckFlag(false);
-  }, []);
+  }, [checkedFoodList]);
 
   /**
    * チェックボックスを選択.
@@ -60,8 +39,8 @@ export const FoodList: FC<Props> = (props) => {
       const food = foodList[index];
       const newArray = [...checkedFoodList];
       if (e.target.checked === true) {
-        setCheckFlag(true);
         newArray.push(food);
+        setFlag(true);
         setCheckedFoodList(newArray);
       } else {
         for (let i = 0; i < newArray.length; i++) {
@@ -70,7 +49,7 @@ export const FoodList: FC<Props> = (props) => {
             setCheckedFoodList(newArray);
           }
           if (newArray.length === 0) {
-            setCheckFlag(false);
+            setFlag(false);
           }
         }
       }
@@ -79,41 +58,15 @@ export const FoodList: FC<Props> = (props) => {
   );
 
   /**
-   * 選択項目を削除.
+   * 選択した食材を登録する.
    */
-  const onClickDelete = useCallback(async () => {
-    alert("選択した項目を全て削除しますか？");
-    for (let food of checkedFoodList) {
-      await axios
-        .post("http://localhost:3001/api/delete/foodList", {
-          id: food.foodId,
-        })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    // 配列を空にする
-    setCheckedFoodList([]);
-    setCheckFlag(false);
-    setFlag(false);
+  const onClickRegister = useCallback(() => {
+    console.log(checkedFoodList);
   }, [checkedFoodList]);
 
   return (
     <div>
       <div>冷蔵庫一覧</div>
-      {(() => {
-        if (flag === false) {
-          return <button onClick={onClickEdit}>編集する</button>;
-        } else {
-          return <button onClick={onClickFinished}>編集をやめる</button>;
-        }
-      })()}
-      {checkFlag && flag && (
-        <button onClick={onClickDelete}>選択項目を削除</button>
-      )}
       <TableContainer sx={{ width: 560 }}>
         <Table aria-label="simple table">
           <TableHead>
@@ -127,12 +80,10 @@ export const FoodList: FC<Props> = (props) => {
             {foodList.map((food, index) => (
               <TableRow key={index}>
                 <TableCell scope="row">
-                  {flag && (
-                    <Checkbox
-                      size="small"
-                      onChange={onChangeCheckBox(index)}
-                    ></Checkbox>
-                  )}
+                  <Checkbox
+                    size="small"
+                    onChange={onChangeCheckBox(index)}
+                  ></Checkbox>
                   {food.name}
                 </TableCell>
                 {(() => {
@@ -154,6 +105,13 @@ export const FoodList: FC<Props> = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {flag && (
+        <div>
+          <Button variant="contained" onClick={onClickRegister}>
+            選択した食材を登録する
+          </Button>
+        </div>
+      )}
       <div>{message}</div>
     </div>
   );
