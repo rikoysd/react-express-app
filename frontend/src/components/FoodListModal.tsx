@@ -16,7 +16,7 @@ import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
 import Button from "@mui/material/Button";
-import { FoodContext, SetFoodContext } from "../provider/FoodProvider";
+import { SetFoodContext } from "../provider/FoodProvider";
 
 type Props = {
   handleClose: () => void;
@@ -30,8 +30,6 @@ export const FoodListModal: FC<Props> = (props) => {
   const [message, setMessage] = useState<string>("");
   // フラグ
   const [flag, setFlag] = useState<boolean>(false);
-  // 食材のグローバル管理（state）
-  const food = useContext(FoodContext);
   // 食材のグローバル管理（set関数）
   const setFood = useContext(SetFoodContext);
   const { handleClose } = props;
