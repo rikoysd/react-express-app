@@ -1,16 +1,22 @@
-import React, { createContext, FC, ReactNode, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  FC,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 import type { Refrigerator } from "../types/refrigerator";
 
 type Props = {
   children: ReactNode;
 };
 
-type FoodType = {
-  checkedFoodList: Array<Refrigerator>;
-  setCheckedFoodList: React.Dispatch<React.SetStateAction<Refrigerator[]>>;
-};
-
-export const FoodContext = createContext<FoodType | null>(null);
+// 値と値を変更する関数のContextを分ける
+export const FoodContext = createContext<Refrigerator[]>([]);
+export const SetFoodContext = createContext<
+  Dispatch<SetStateAction<Refrigerator[]>>
+>(() => undefined);
 
 export const FoodProvider: FC<Props> = (props) => {
   const { children } = props;
@@ -19,8 +25,12 @@ export const FoodProvider: FC<Props> = (props) => {
   const [checkedFoodList, setCheckedFoodList] = useState<Refrigerator[]>([]);
 
   return (
-    <FoodContext.Provider value={{ checkedFoodList, setCheckedFoodList }}>
-      {children}
+    // state用のプロバイダー
+    <FoodContext.Provider value={checkedFoodList}>
+      {/* set関数用のプロバイダー */}
+      <SetFoodContext.Provider value={setCheckedFoodList}>
+        {children}
+      </SetFoodContext.Provider>
     </FoodContext.Provider>
   );
 };

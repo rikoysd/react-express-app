@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
 import { Calender } from "../components/Calender";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import TextField from "@mui/material/TextField";
@@ -81,7 +74,7 @@ export const RecordRecipes: FC = () => {
    * @param index - インデックス
    */
   const handleDelete = (index: number) => {
-    food?.checkedFoodList.splice(index, 1);
+    food.splice(index, 1);
     // 食材が削除されたためフラグの値を変更
     setFlag(true);
   };
@@ -143,10 +136,10 @@ export const RecordRecipes: FC = () => {
               </Modal>
             </div>
             {(() => {
-              if (food?.checkedFoodList.length !== 0) {
+              if (food.length !== 0) {
                 return (
                   <Stack direction="row" spacing={1}>
-                    {food?.checkedFoodList.map((food, index) => (
+                    {food.map((food, index) => (
                       <div key={index}>
                         <Chip
                           label={food.name}
