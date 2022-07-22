@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -25,7 +25,7 @@ export const RegisterFood: FC = () => {
   // 名前のエラー
   const [nameError, setNameError] = useState<string>("");
   // 数量
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number | string>(0);
   // 数量の選択
   const [qSelect, setQSelect] = useState<string>("1");
   // 賞味期限・消費期限
@@ -39,10 +39,12 @@ export const RegisterFood: FC = () => {
   const [bestBeforeError, setBestBeforeError] = useState<string>("");
   // 登録エラー
   const [registerError, setRegisterError] = useState<string>("");
+  // エラーリスト
+  const [errorList, setErrorList] = useState<boolean[]>([]);
 
   useEffect(() => {
     getFoodList();
-  }, [bestBefore]);
+  }, [bestBefore, purchaseDate]);
 
   /**
    * 購入日を選択.
@@ -51,6 +53,9 @@ export const RegisterFood: FC = () => {
   const onChangePurchaseDate = (newValue: Date | null) => {
     if (newValue?.toString() === "Invalid Date") {
       setPurchaseDateError("不正な日付です");
+    } else if (newValue === null) {
+      setPurchaseDate(new Date());
+      setPurchaseDateError("");
     } else {
       setPurchaseDate(newValue);
       setPurchaseDateError("");
@@ -88,6 +93,9 @@ export const RegisterFood: FC = () => {
   const onChangeBestBefore = (newValue: Date | null) => {
     if (newValue?.toString() === "Invalid Date") {
       setBestBeforeError("不正な日付です");
+    } else if (newValue === null) {
+      setBestBefore(new Date());
+      setBestBeforeError("");
     } else {
       setBestBefore(newValue);
       setBestBeforeError("");
@@ -110,14 +118,35 @@ export const RegisterFood: FC = () => {
   /**
    * 食材を登録する.
    */
-  const onClickRegisterFood = async () => {
+  const onClickRegisterFood = useCallback(async () => {
     // エラー処理
-    if (purchaseDate === null) {
-      setPurchaseDate(new Date());
+    const newErrorList = [...errorList];
+    console.log(newErrorList);
+
+    if (purchaseDate?.toString() === "Invalid Date") {
+      setPurchaseDateError("不正な日付です");
+      newErrorList.push(true);
+    } else {
+      setPurchaseDateError("");
     }
+
     if (name === "") {
       setNameError("食材名を入力してください");
-      setFlag(true);
+      newErrorList.push(true);
+    } else {
+      setNameError("");
+    }
+
+    if (bestBefore?.toString() === "Invalid Date") {
+      setBestBeforeError("不正な日付です");
+      newErrorList.push(true);
+    } else {
+      setBestBeforeError("");
+    }
+
+    if (newErrorList.length !== 0) {
+      setRegisterError("正しく入力されていない箇所があります");
+      return;
     }
 
     // id採番
@@ -160,7 +189,7 @@ export const RegisterFood: FC = () => {
     setQSelect("1");
     setQuantity(0);
     setBestBefore(new Date());
-  };
+  }, [purchaseDate, bestBefore, name]);
 
   return (
     <SContainer>
@@ -170,13 +199,15 @@ export const RegisterFood: FC = () => {
           <SItemBlock>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <label htmlFor="purchaseDate">
-                <SItem>購入日</SItem>
+                <SItem>購入日（必須）</SItem>
                 <SError>{purchaseDateError}</SError>
                 <DesktopDatePicker
                   inputFormat="yyyy/MM/dd"
                   value={purchaseDate}
                   onChange={onChangePurchaseDate}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => (
+                    <TextField {...params} style={{ width: "300px" }} />
+                  )}
                 />
               </label>
             </LocalizationProvider>
@@ -191,6 +222,7 @@ export const RegisterFood: FC = () => {
                 value={name}
                 onChange={onChangeName}
                 size="small"
+                style={{ width: "300px" }}
               />
             </label>
           </SItemBlock>
@@ -218,6 +250,7 @@ export const RegisterFood: FC = () => {
                     endAdornment={
                       <InputAdornment position="end">個</InputAdornment>
                     }
+                    style={{ width: "300px" }}
                     size="small"
                     value={quantity}
                     onChange={onChangeQuantity}
@@ -230,6 +263,7 @@ export const RegisterFood: FC = () => {
                     endAdornment={
                       <InputAdornment position="end">ｇ</InputAdornment>
                     }
+                    style={{ width: "300px" }}
                     size="small"
                     value={quantity}
                     onChange={onChangeQuantity}
@@ -250,7 +284,9 @@ export const RegisterFood: FC = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      style={{
+                        width: "300px",
+                      }}
                     />
                   )}
                 />
@@ -266,7 +302,10 @@ export const RegisterFood: FC = () => {
                   backgroundColor: "#FEE6C2",
                   fontFamily: "'Zen Maru Gothic', sans-serif",
                   boxShadow: "none",
-                  marginRight: "10px",
+                  marginRight: "20px",
+                  height: "45px",
+                  width: "160px",
+                  borderRadius: "30px",
                 }}
                 variant="contained"
                 onClick={onClickClear}
@@ -279,6 +318,9 @@ export const RegisterFood: FC = () => {
                   backgroundColor: "#FFAA2C",
                   fontFamily: "'Zen Maru Gothic', sans-serif",
                   boxShadow: "none",
+                  width: "160px",
+                  height: "45px",
+                  borderRadius: "30px",
                 }}
                 variant="contained"
                 onClick={onClickRegisterFood}
