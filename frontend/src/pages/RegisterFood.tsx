@@ -32,6 +32,10 @@ export const RegisterFood: FC = () => {
   // エラーフラグ
   const [flag, setFlag] = useState<boolean>(false);
   const { foodList, getFoodList } = useFetchRefrigerator();
+  // 購入日エラー
+  const [purchaseDateError, setPurchaseDateError] = useState<string>("");
+  // 賞味期限エラー
+  const [bestBeforeError, setBestBeforeError] = useState<string>("");
 
   useEffect(() => {
     getFoodList();
@@ -42,7 +46,12 @@ export const RegisterFood: FC = () => {
    * @param new Value
    */
   const onChangePurchaseDate = (newValue: Date | null) => {
-    setPurchaseDate(newValue);
+    if (newValue?.toString() === "Invalid Date") {
+      setPurchaseDateError("不正な日付です");
+    } else {
+      setPurchaseDate(newValue);
+      setPurchaseDateError("");
+    }
   };
 
   /**
@@ -74,7 +83,12 @@ export const RegisterFood: FC = () => {
    * @param newValue
    */
   const onChangeBestBefore = (newValue: Date | null) => {
-    setBestBefore(newValue);
+    if (newValue?.toString() === "Invalid Date") {
+      setBestBeforeError("不正な日付です");
+    } else {
+      setBestBefore(newValue);
+      setBestBeforeError("");
+    }
   };
 
   /**
@@ -150,6 +164,7 @@ export const RegisterFood: FC = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <label htmlFor="purchaseDate">
               <div>購入日</div>
+              <div>{purchaseDateError}</div>
               <DesktopDatePicker
                 inputFormat="yyyy/MM/dd"
                 value={purchaseDate}
@@ -208,6 +223,7 @@ export const RegisterFood: FC = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <label htmlFor="purchaseDate">
               <div>賞味期限・消費期限</div>
+              <div>{bestBeforeError}</div>
               <DesktopDatePicker
                 inputFormat="yyyy/MM/dd"
                 value={bestBefore}

@@ -16,6 +16,7 @@ import { FoodContext } from "../provider/FoodProvider";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import { MenuOfDate } from "../components/MenuOfDate";
+import { format } from "date-fns";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -36,6 +37,8 @@ export const RecordRecipes: FC = () => {
   const [calenderFlag, setCalenderFlag] = useState<boolean>(false);
   // カレンダーの日付
   const [calenderDate, setCalenderDate] = useState<string>("");
+  // 日付エラー
+  const [dateError, setDateError] = useState<string>("");
 
   useEffect(() => {}, [flag, calenderDate]);
 
@@ -44,7 +47,12 @@ export const RecordRecipes: FC = () => {
    * @param newValue
    */
   const onChangeDate = (newValue: Date | null) => {
-    setDate(newValue);
+    if (newValue?.toString() === "Invalid Date") {
+      setDateError("不正な日付です");
+    } else {
+      setDate(newValue);
+      setDateError("");
+    }
   };
 
   /**
@@ -84,6 +92,13 @@ export const RecordRecipes: FC = () => {
     setFlag(true);
   };
 
+  /**
+   * 献立を登録する.
+   */
+  const onClickRegisterRecipe = () => {
+    // if(date===Invalid Date){}
+  };
+
   return (
     <div>
       <SContainer>
@@ -96,6 +111,7 @@ export const RecordRecipes: FC = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <label htmlFor="date">
               <div>日付</div>
+              <div>{dateError}</div>
               <DesktopDatePicker
                 inputFormat="yyyy/MM/dd"
                 value={date}
@@ -163,7 +179,9 @@ export const RecordRecipes: FC = () => {
           </SMenu>
           {/* )} */}
           <div>
-            <Button variant="contained">登録する</Button>
+            <Button variant="contained" onClick={onClickRegisterRecipe}>
+              登録する
+            </Button>
           </div>
         </div>
       </SContainer>
