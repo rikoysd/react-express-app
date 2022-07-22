@@ -1,10 +1,31 @@
-import { FC } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
+import { format } from "date-fns";
 
-export const MenuOfDate: FC = () => {
+type Props = {
+  calenderFlag: Boolean;
+  calenderDate: String;
+};
+
+export const MenuOfDate: FC<Props> = (props) => {
+  const { calenderFlag } = props;
+  const [date, setDate] = useState<string>("");
+
+  useEffect(() => {
+    const nowDate = new Date();
+    const nowDateStr = format(nowDate, "yyyy-MM-dd");
+    setDate(nowDateStr);
+  }, [props.calenderDate, calenderFlag]);
+
   return (
     <div>
-      <h4>2022/07/20</h4>
+      {(() => {
+        if (props.calenderFlag === true) {
+          return <h4>{props.calenderDate}</h4>;
+        } else {
+          return <h4>{date}</h4>;
+        }
+      })()}
       <SContainer>
         <div>
           <h4>朝食</h4>

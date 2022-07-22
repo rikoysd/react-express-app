@@ -26,13 +26,18 @@ export const RecordRecipes: FC = () => {
   const [name, setName] = useState<string>("");
   // メニューのフラグ
   const [menuFlag, setMenuFlag] = useState<boolean>(false);
+  // モーダルの表示・非表示
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const food = useContext(FoodContext);
   const [flag, setFlag] = useState<boolean>(false);
+  // カレンダーのフラグ
+  const [calenderFlag, setCalenderFlag] = useState<boolean>(false);
+  // カレンダーの日付
+  const [calenderDate, setCalenderDate] = useState<string>("");
 
-  useEffect(() => {}, [flag]);
+  useEffect(() => {}, [flag, calenderDate]);
 
   /**
    * 日付を選択.
@@ -82,7 +87,11 @@ export const RecordRecipes: FC = () => {
   return (
     <div>
       <SContainer>
-        <Calender></Calender>
+        <Calender
+          calenderFlag={calenderFlag}
+          setCalenderFlag={setCalenderFlag}
+          setCalenderDate={setCalenderDate}
+        ></Calender>
         <div>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <label htmlFor="date">
@@ -158,7 +167,10 @@ export const RecordRecipes: FC = () => {
           </div>
         </div>
       </SContainer>
-      <MenuOfDate></MenuOfDate>
+      <MenuOfDate
+        calenderFlag={calenderFlag}
+        calenderDate={calenderDate}
+      ></MenuOfDate>
     </div>
   );
 };
