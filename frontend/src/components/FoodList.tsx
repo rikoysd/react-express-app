@@ -9,6 +9,8 @@ import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 
 type Props = {
   bestBefore: Date | null;
@@ -103,30 +105,83 @@ export const FoodList: FC<Props> = (props) => {
 
   return (
     <div>
-      <div>冷蔵庫一覧</div>
-      {(() => {
-        if (flag === false) {
-          return <button onClick={onClickEdit}>編集する</button>;
-        } else {
-          return <button onClick={onClickFinished}>編集をやめる</button>;
-        }
-      })()}
+      <SPosition>
+        <div>冷蔵庫一覧</div>
+        {(() => {
+          if (flag === false) {
+            return (
+              <Button
+                size="small"
+                style={{
+                  color: "black",
+                  backgroundColor: "#FEC062",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                }}
+                variant="contained"
+                onClick={onClickEdit}
+              >
+                編集する
+              </Button>
+            );
+          } else {
+            return (
+              <Button
+                size="small"
+                style={{
+                  color: "black",
+                  backgroundColor: "#FEC062",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                }}
+                variant="contained"
+                onClick={onClickFinished}
+              >
+                編集をやめる
+              </Button>
+            );
+          }
+        })()}
+      </SPosition>
       {checkFlag && flag && (
         <button onClick={onClickDelete}>選択項目を削除</button>
       )}
-      <TableContainer sx={{ width: 560 }}>
+      <TableContainer
+        sx={{
+          width: 450,
+          border: "solid 2px #FEC062",
+          padding: "10px",
+        }}
+      >
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>食材名</TableCell>
-              <TableCell align="right">数量</TableCell>
-              <TableCell align="right">期限</TableCell>
+              <TableCell
+                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+              >
+                食材名
+              </TableCell>
+              <TableCell
+                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                align="right"
+              >
+                数量
+              </TableCell>
+              <TableCell
+                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                align="right"
+              >
+                期限
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {foodList.map((food, index) => (
               <TableRow key={index}>
-                <TableCell scope="row">
+                <TableCell
+                  scope="row"
+                  style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                >
                   {flag && (
                     <Checkbox
                       size="small"
@@ -138,15 +193,28 @@ export const FoodList: FC<Props> = (props) => {
                 {(() => {
                   if (food.qSelect === 1) {
                     return (
-                      <TableCell align="right">{food.quantity}個</TableCell>
+                      <TableCell
+                        align="right"
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      >
+                        {food.quantity}個
+                      </TableCell>
                     );
                   } else {
                     return (
-                      <TableCell align="right">{food.quantity}g</TableCell>
+                      <TableCell
+                        align="right"
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      >
+                        {food.quantity}g
+                      </TableCell>
                     );
                   }
                 })()}
-                <TableCell align="right">
+                <TableCell
+                  align="right"
+                  style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                >
                   {new Date(food.bestBefore).toLocaleString().split(" ")[0]}
                 </TableCell>
               </TableRow>
@@ -158,3 +226,10 @@ export const FoodList: FC<Props> = (props) => {
     </div>
   );
 };
+
+const SPosition = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: "10px",
+});

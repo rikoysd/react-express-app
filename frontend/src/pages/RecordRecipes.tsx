@@ -16,7 +16,6 @@ import { FoodContext } from "../provider/FoodProvider";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import { MenuOfDate } from "../components/MenuOfDate";
-import { format } from "date-fns";
 
 export const RecordRecipes: FC = () => {
   // 日付
