@@ -25,6 +25,9 @@ import Stack from "@mui/material/Stack";
 import { MenuOfDate } from "../components/MenuOfDate";
 import type { Menu } from "../types/menu";
 import { useFetchMenu } from "../hooks/useFetchMenu";
+import { format } from "date-fns/esm";
+import axios from "axios";
+import { useFetchMeal } from "../hooks/useFetchMeal";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -51,9 +54,11 @@ export const RecordRecipes: FC = () => {
   // メニューリスト
   const [postMenuList, setPostMenuList] = useState<Menu[]>([]);
   const { menuList, getMenuList } = useFetchMenu();
+  const { mealList, getMealList } = useFetchMeal();
 
   useEffect(() => {
     getMenuList();
+    // getMealList();
   }, [flag, calenderDate, food]);
 
   /**
@@ -135,9 +140,17 @@ export const RecordRecipes: FC = () => {
   /**
    * 献立を登録する.
    */
-  const onClickRegisterRecipe = () => {
-    // if(date===Invalid Date){}
-  };
+  const onClickRegisterRecipe = useCallback(async () => {
+    console.log(meal);
+    console.log(postMenuList);
+
+    let dateFormat = format(Number(date), "yyyy/MM/dd");
+    console.log(dateFormat);
+
+    // id採番
+
+    // await axios.post("http://localhost:3000/api/post/mealList", {});
+  }, [date, meal, postMenuList]);
 
   return (
     <div>

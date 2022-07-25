@@ -7,7 +7,6 @@ export const useFetchMenu = () => {
 
   const getMenuList = useCallback(() => {
     axios.get("http://localhost:3001/api/get/menuList").then((response) => {
-      console.log(response);
       setMenuList(response.data);
     });
   }, []);

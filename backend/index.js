@@ -111,6 +111,40 @@ app.post("/api/post/menuList", (req, res) => {
   );
 });
 
+// 献立の取得
+app.get("api/get/mealList", (req, res) => {
+  const sqlSelect = "SELECT * FROM meallist";
+  connections.query(sqlSelect, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
+// 献立の登録
+app.post("/api/post/mealList", (req, res) => {
+  const mealId = req.body.id;
+  const date = req.body.date;
+  const meal = req.body.meal;
+  const sqlInsert = "INSERT INTO meallist SET ?";
+  connections.query(
+    sqlInsert,
+    {
+      mealId: mealId,
+      date: date,
+      meal: meal,
+    },
+    (err, result) => {
+      if (err) {
+        throw err;
+      }
+      console.log(result);
+      res.send("Received POST Data!");
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`listening on ${port}`);
 });
