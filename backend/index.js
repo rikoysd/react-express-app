@@ -79,6 +79,38 @@ app.post("/api/delete/foodList", (req, res) => {
   });
 });
 
+// メニューの取得
+app.get("/api/get/menuList", (req, res) => {
+  const sqlSelect = "SELECT * FROM menulist";
+  connections.query(sqlSelect, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
+// メニューの登録
+app.post("/api/post/menuList", (req, res) => {
+  const menuId = req.body.id;
+  const name = req.body.name;
+  const sqlInsert = "INSERT INTO menulist SET ?";
+  connections.query(
+    sqlInsert,
+    {
+      menuId: menuId,
+      name: name,
+    },
+    (err, result) => {
+      if (err) {
+        throw err;
+      }
+      console.log(result);
+      res.send("Received POST Data!");
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`listening on ${port}`);
 });

@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Calender } from "../components/Calender";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import TextField from "@mui/material/TextField";
@@ -12,10 +19,12 @@ import { styled } from "@mui/material/styles";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { FoodListModal } from "../components/FoodListModal";
-import { FoodContext } from "../provider/FoodProvider";
+import { FoodContext, SetFoodContext } from "../provider/FoodProvider";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import { MenuOfDate } from "../components/MenuOfDate";
+import type { Menu } from "../types/menu";
+import { useFetchMenu } from "../hooks/useFetchMenu";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -31,6 +40,7 @@ export const RecordRecipes: FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const food = useContext(FoodContext);
+  const setFood = useContext(SetFoodContext);
   const [flag, setFlag] = useState<boolean>(false);
   // カレンダーのフラグ
   const [calenderFlag, setCalenderFlag] = useState<boolean>(false);
@@ -38,8 +48,13 @@ export const RecordRecipes: FC = () => {
   const [calenderDate, setCalenderDate] = useState<string>("");
   // 日付エラー
   const [dateError, setDateError] = useState<string>("");
+  // メニューリスト
+  const [postMenuList, setPostMenuList] = useState<Menu[]>([]);
+  const { menuList, getMenuList } = useFetchMenu();
 
-  useEffect(() => {}, [flag, calenderDate]);
+  useEffect(() => {
+    getMenuList();
+  }, [flag, calenderDate, food]);
 
   /**
    * 日付を選択.
@@ -90,6 +105,32 @@ export const RecordRecipes: FC = () => {
     // 食材が削除されたためフラグの値を変更
     setFlag(true);
   };
+
+  /**
+   * メニューを追加する.
+   */
+  const onClickRegisterMenu = useCallback(() => {
+    // id採番
+    let id = 0;
+    if (menuList.length === 0) {
+      id = 1;
+    } else {
+      id = menuList.length + 1;
+    }
+
+    const menu: Menu = {
+      menuId: id,
+      name: name,
+      foodList: food,
+    };
+    let newPostMenuList = [...postMenuList];
+    newPostMenuList.push(menu);
+    setPostMenuList(newPostMenuList);
+
+    // 入力値をクリアにする
+    setName("");
+    setFood([]);
+  }, [name, food]);
 
   /**
    * 献立を登録する.
@@ -175,8 +216,18 @@ export const RecordRecipes: FC = () => {
                 );
               }
             })()}
+            <Button variant="contained" onClick={onClickRegisterMenu}>
+              追加する
+            </Button>
           </SMenu>
           {/* )} */}
+          <div>
+            {postMenuList.map((menu, index) => (
+              <div key={index}>
+                <div>{menu.name}</div>
+              </div>
+            ))}
+          </div>
           <div>
             <Button variant="contained" onClick={onClickRegisterRecipe}>
               登録する
