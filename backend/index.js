@@ -92,7 +92,7 @@ app.get("/api/get/menuList", (req, res) => {
 
 // メニューの登録
 app.post("/api/post/menuList", (req, res) => {
-  const menuId = req.body.id;
+  const menuId = req.body.menuId;
   const name = req.body.name;
   const sqlInsert = "INSERT INTO menulist SET ?";
   connections.query(
@@ -111,8 +111,50 @@ app.post("/api/post/menuList", (req, res) => {
   );
 });
 
+// 献立とメニューidを登録
+app.post("/api/post/meal_menu", (req, res) => {
+  const mealId = req.body.mealId;
+  const menuId = req.body.menuId;
+  const sqlInsert = "INSERT INTO meal_menu SET ?";
+  connections.query(
+    sqlInsert,
+    {
+      mealId: mealId,
+      menuId: menuId,
+    },
+    (err, result) => {
+      if (err) {
+        throw err;
+      }
+      console.log(result);
+      res.send("Received POST Data!");
+    }
+  );
+});
+
+// メニューと食材idを登録
+app.post("/api/post/menu_food", (req, res) => {
+  const foodId = req.body.foodId;
+  const menuId = req.body.menuId;
+  const sqlInsert = "INSERT INTO menu_food SET ?";
+  connections.query(
+    sqlInsert,
+    {
+      menuId: menuId,
+      foodId: foodId,
+    },
+    (err, result) => {
+      if (err) {
+        throw err;
+      }
+      console.log(result);
+      res.send("Received POST Data!");
+    }
+  );
+});
+
 // 献立の取得
-app.get("api/get/mealList", (req, res) => {
+app.get("/api/get/meal", (req, res) => {
   const sqlSelect = "SELECT * FROM meallist";
   connections.query(sqlSelect, (err, result) => {
     if (err) {
@@ -124,7 +166,7 @@ app.get("api/get/mealList", (req, res) => {
 
 // 献立の登録
 app.post("/api/post/mealList", (req, res) => {
-  const mealId = req.body.id;
+  const mealId = req.body.mealId;
   const date = req.body.date;
   const meal = req.body.meal;
   const sqlInsert = "INSERT INTO meallist SET ?";

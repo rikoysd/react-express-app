@@ -26,8 +26,8 @@ import { MenuOfDate } from "../components/MenuOfDate";
 import type { Menu } from "../types/menu";
 import { useFetchMenu } from "../hooks/useFetchMenu";
 import { format } from "date-fns/esm";
-import axios from "axios";
 import { useFetchMeal } from "../hooks/useFetchMeal";
+import axios from "axios";
 
 export const RecordRecipes: FC = () => {
   // 日付
@@ -53,12 +53,18 @@ export const RecordRecipes: FC = () => {
   const [dateError, setDateError] = useState<string>("");
   // メニューリスト
   const [postMenuList, setPostMenuList] = useState<Menu[]>([]);
+  // メニューリスト（表示用）
+  const [displayMenuList, setDisplayMenuList] = useState<Menu[]>([]);
   const { menuList, getMenuList } = useFetchMenu();
   const { mealList, getMealList } = useFetchMeal();
+  // 送信エラー
+  const [submitError, setSubmitError] = useState<string>("");
+  // 送信フラグ
+  const [submitFlag, setSubmitFlag] = useState<boolean>(false);
 
   useEffect(() => {
     getMenuList();
-    // getMealList();
+    getMealList();
   }, [flag, calenderDate, food]);
 
   /**
@@ -115,22 +121,15 @@ export const RecordRecipes: FC = () => {
    * メニューを追加する.
    */
   const onClickRegisterMenu = useCallback(() => {
-    // id採番
-    let id = 0;
-    if (menuList.length === 0) {
-      id = 1;
-    } else {
-      id = menuList.length + 1;
-    }
-
     const menu: Menu = {
-      menuId: id,
+      menuId: -1,
       name: name,
       foodList: food,
     };
     let newPostMenuList = [...postMenuList];
     newPostMenuList.push(menu);
     setPostMenuList(newPostMenuList);
+    setDisplayMenuList(newPostMenuList);
 
     // 入力値をクリアにする
     setName("");
@@ -141,16 +140,106 @@ export const RecordRecipes: FC = () => {
    * 献立を登録する.
    */
   const onClickRegisterRecipe = useCallback(async () => {
-    console.log(meal);
-    console.log(postMenuList);
+    // エラー処理
 
     let dateFormat = format(Number(date), "yyyy/MM/dd");
-    console.log(dateFormat);
 
     // id採番
+    let mealId = 0;
+    let idList = [];
+    if (mealList.length === 0) {
+      mealId = 1;
+    } else {
+      for (let menu of mealList) {
+        idList.push(menu.mealId);
+      }
+      mealId = Math.max(...idList) + 1;
+    }
 
-    // await axios.post("http://localhost:3000/api/post/mealList", {});
-  }, [date, meal, postMenuList]);
+    // 献立の登録
+    await axios
+      .post("http://localhost:3001/api/post/mealList", {
+        mealId: mealId,
+        date: dateFormat,
+        meal: meal,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+        setSubmitError("登録できませんでした");
+      });
+
+    // メニューの登録
+    for (let menu of postMenuList) {
+      // id採番
+      let id = 0;
+      let idList = [];
+      const newMenuList = [...menuList];
+      if (newMenuList.length === 0) {
+        id = 1;
+      } else {
+        for (let menu of newMenuList) {
+          idList.push(menu.menuId);
+        }
+        id = Math.max(...idList) + 1;
+      }
+
+      await axios
+        .post("http://localhost:3001/api/post/menuList", {
+          menuId: id,
+          name: menu.name,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+          setSubmitError("登録できませんでした");
+        });
+
+      const newMenu: Menu = {
+        menuId: id,
+        name: menu.name,
+        foodList: menu.foodList,
+      };
+      newMenuList.push(newMenu);
+      setPostMenuList(newMenuList);
+
+      // 献立とメニューidの登録
+      await axios
+        .post("http://localhost:3001/api/post/meal_menu", {
+          mealId: mealId,
+          menuId: id,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+          setSubmitError("登録できませんでした");
+        });
+
+      // メニューと食材idの登録
+      for (let food of menu.foodList) {
+        await axios
+          .post("http://localhost:3001/api/post/menu_food", {
+            menuId: id,
+            foodId: food.foodId,
+          })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+            setSubmitError("登録できませんでした");
+          });
+      }
+    }
+    // 表示用のメニューリストを空に
+    setDisplayMenuList([]);
+  }, [date, meal, postMenuList, mealList]);
 
   return (
     <div>
@@ -235,12 +324,13 @@ export const RecordRecipes: FC = () => {
           </SMenu>
           {/* )} */}
           <div>
-            {postMenuList.map((menu, index) => (
+            {displayMenuList.map((menu, index) => (
               <div key={index}>
                 <div>{menu.name}</div>
               </div>
             ))}
           </div>
+          <div>{submitError}</div>
           <div>
             <Button variant="contained" onClick={onClickRegisterRecipe}>
               登録する
