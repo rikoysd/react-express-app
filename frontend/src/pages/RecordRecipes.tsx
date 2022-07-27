@@ -250,79 +250,100 @@ export const RecordRecipes: FC = () => {
           setCalenderDate={setCalenderDate}
         ></Calender>
         <div>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <label htmlFor="date">
-              <div>日付</div>
-              <div>{dateError}</div>
-              <DesktopDatePicker
-                inputFormat="yyyy/MM/dd"
-                value={date}
-                onChange={onChangeDate}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </label>
-          </LocalizationProvider>
-          <div>食事</div>
-          <FormControl sx={{ width: 200 }}>
-            <Select value={meal} onChange={onChangeMeal}>
-              <MenuItem value="朝食">朝食</MenuItem>
-              <MenuItem value="昼食">昼食</MenuItem>
-              <MenuItem value="夕食">夕食</MenuItem>
-              <MenuItem value="おやつ">おやつ</MenuItem>
-            </Select>
-          </FormControl>
-          <div>メニュー</div>
-          <Button variant="outlined" onClick={onClickAddMenu}>
-            追加する
-          </Button>
-          {/* {menuFlag && ( */}
-          <SMenu>
-            <div>
-              <label htmlFor="name">
-                <div>料理名</div>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={onChangeName}
+          <SItemBlock>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <label htmlFor="date">
+                <SItem>日付</SItem>
+                <div>{dateError}</div>
+                <DesktopDatePicker
+                  inputFormat="yyyy/MM/dd"
+                  value={date}
+                  onChange={onChangeDate}
+                  renderInput={(params) => (
+                    <TextField {...params} style={{ width: "300px" }} />
+                  )}
                 />
               </label>
-            </div>
-            <div>食材</div>
-            <div>
-              <Button onClick={handleOpen}>追加する</Button>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <FoodListModal handleClose={handleClose}></FoodListModal>
-                </Box>
-              </Modal>
-            </div>
-            {(() => {
-              if (food.length !== 0) {
-                return (
-                  <Stack direction="row" spacing={1}>
-                    {food.map((food, index) => (
-                      <div key={index}>
-                        <Chip
-                          label={food.name}
-                          onDelete={() => handleDelete(index)}
-                        />
-                      </div>
-                    ))}
-                  </Stack>
-                );
-              }
-            })()}
-            <Button variant="contained" onClick={onClickRegisterMenu}>
-              追加する
-            </Button>
-          </SMenu>
-          {/* )} */}
+            </LocalizationProvider>
+          </SItemBlock>
+          <SItemBlock>
+            <SItem>食事</SItem>
+            <FormControl sx={{ width: "300px" }}>
+              <Select value={meal} onChange={onChangeMeal}>
+                <MenuItem value="朝食">朝食</MenuItem>
+                <MenuItem value="昼食">昼食</MenuItem>
+                <MenuItem value="夕食">夕食</MenuItem>
+                <MenuItem value="おやつ">おやつ</MenuItem>
+              </Select>
+            </FormControl>
+          </SItemBlock>
+          <SItemBlock>
+            <div>メニュー</div>
+            <SMenu>
+              <SItemBlock2>
+                <label htmlFor="name">
+                  <SItem>料理名</SItem>
+                  <TextField
+                    id="name"
+                    variant="outlined"
+                    value={name}
+                    onChange={onChangeName}
+                    size="small"
+                    style={{ width: "300px" }}
+                  />
+                </label>
+              </SItemBlock2>
+              <SItemBlock2>
+                <SItem>食材</SItem>
+                <div>
+                  <Button
+                    style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                    onClick={handleOpen}
+                  >
+                    追加する
+                  </Button>
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={style}>
+                      <FoodListModal handleClose={handleClose}></FoodListModal>
+                    </Box>
+                  </Modal>
+                </div>
+                {(() => {
+                  if (food.length !== 0) {
+                    return (
+                      <Stack direction="row" spacing={1}>
+                        {food.map((food, index) => (
+                          <div key={index}>
+                            <Chip
+                              label={food.name}
+                              onDelete={() => handleDelete(index)}
+                            />
+                          </div>
+                        ))}
+                      </Stack>
+                    );
+                  }
+                })()}
+                <Button
+                  style={{
+                    color: "black",
+                    backgroundColor: "#FEC062",
+                    fontFamily: "'Zen Maru Gothic', sans-serif",
+                    boxShadow: "none",
+                  }}
+                  variant="contained"
+                  onClick={onClickRegisterMenu}
+                >
+                  メニューを登録する
+                </Button>
+              </SItemBlock2>
+            </SMenu>
+          </SItemBlock>
           <div>
             {displayMenuList.map((menu, index) => (
               <div key={index}>
@@ -332,7 +353,36 @@ export const RecordRecipes: FC = () => {
           </div>
           <div>{submitError}</div>
           <div>
-            <Button variant="contained" onClick={onClickRegisterRecipe}>
+            <Button
+              style={{
+                color: "black",
+                backgroundColor: "#FEE6C2",
+                fontFamily: "'Zen Maru Gothic', sans-serif",
+                boxShadow: "none",
+                marginRight: "20px",
+                height: "45px",
+                width: "160px",
+                borderRadius: "30px",
+              }}
+              variant="contained"
+            >
+              クリア
+            </Button>
+          </div>
+          <div>
+            <Button
+              style={{
+                color: "black",
+                backgroundColor: "#FFAA2C",
+                fontFamily: "'Zen Maru Gothic', sans-serif",
+                boxShadow: "none",
+                width: "160px",
+                height: "45px",
+                borderRadius: "30px",
+              }}
+              variant="contained"
+              onClick={onClickRegisterRecipe}
+            >
               登録する
             </Button>
           </div>
@@ -351,7 +401,8 @@ const SContainer = styled("div")({
 });
 
 const SMenu = styled("div")({
-  border: "1px solid",
+  // backgroundColor: "#FFF5E5",
+  border: "1px solid #FFAA2C",
   padding: "20px 15px",
   margin: "10px",
 });
@@ -366,3 +417,15 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+const SItem = styled("div")({
+  marginBottom: "8px",
+});
+
+const SItemBlock = styled("div")({
+  margin: "20px 0",
+});
+
+const SItemBlock2 = styled("div")({
+  margin: "10px 0",
+});

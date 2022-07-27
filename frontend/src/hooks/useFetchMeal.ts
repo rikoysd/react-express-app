@@ -7,7 +7,6 @@ export const useFetchMeal = () => {
 
   const getMealList = useCallback(() => {
     axios.get("http://localhost:3001/api/get/meal").then((response) => {
-      console.log(response);
       setMealList(response.data);
     });
   }, []);

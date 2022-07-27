@@ -16,56 +16,109 @@ export const useFetchMealById = () => {
   const [snackList, setSnackList] = useState<Meal[]>([]);
   // 朝食メニュー
   const [morningMenuList, setMorningMenuList] = useState<Menu[]>([]);
+  // 昼食メニュー
   const [lunchMenuList, setLunchMenuList] = useState<Menu[]>([]);
+  // 夕食メニュー
   const [dinnerMenuList, setDinnerMenuList] = useState<Menu[]>([]);
+  // おやつメニュー
   const [snackMenuList, setSnackMenuList] = useState<Menu[]>([]);
+  const [flag, setFlag] = useState<boolean>(false);
 
-  const getMealById = useCallback(async (date: string) => {
-    const newMorningList = [...morningList];
-    const newLunchList = [...lunchList];
-    const newDinnerList = [...dinnerList];
-    const newSnackList = [...snackList];
-    await axios
-      .post("http://localhost:3001/api/post/targetMeal", {
-        date: date,
-      })
-      .then((response) => {
-        setMealListById(response.data);
+  // const clearArray = useCallback(() => {
+  //   // console.log("call");
+  //   setMorningList([]);
+  //   setLunchList([]);
+  //   setDinnerList([]);
+  //   setSnackList([]);
+  //   setMorningMenuList([]);
+  //   setLunchMenuList([]);
+  //   setDinnerMenuList([]);
+  //   setSnackMenuList([]);
+  //   getMealById("2022/07/27");
+  // }, []);
 
-        for (let meal of response.data) {
-          if (meal.meal === "朝食") {
-            newMorningList.push(meal);
-          } else if (meal.meal === "昼食") {
-            newLunchList.push(meal);
-          } else if (meal.meal === "夕食") {
-            newDinnerList.push(meal);
-          } else {
-            newSnackList.push(meal);
+  const getMealById = useCallback(
+    async (date: string) => {
+      let newMorningList = [...morningList];
+      let newLunchList = [...lunchList];
+      let newDinnerList = [...dinnerList];
+      let newSnackList = [...snackList];
+      let newMorningMenuList = [...morningMenuList];
+      let newLunchMenuList = [...lunchMenuList];
+      let newDinnerMenuList = [...dinnerMenuList];
+      let newSnackMenuList = [...snackMenuList];
+      await axios
+        .post("http://localhost:3001/api/post/targetMeal", {
+          date: date,
+        })
+        .then((response) => {
+          console.log(response);
+          setMealListById(response.data);
+
+          if (response.data.length === 0) {
+            console.log("call");
+            setFlag(true);
+            // 各カテゴリのメニューリストを空にする
+            newMorningMenuList = [];
+            newLunchMenuList = [];
+            newDinnerMenuList = [];
+            newSnackMenuList = [];
+            setMorningMenuList(newMorningMenuList);
+            setLunchMenuList(newLunchMenuList);
+            setDinnerMenuList(newDinnerMenuList);
+            setSnackMenuList(newSnackMenuList);
+            return;
           }
+
+          for (let meal of response.data) {
+            if (meal.meal === "朝食") {
+              newMorningList = [];
+              newMorningList.push(meal);
+            } else if (meal.meal === "昼食") {
+              newLunchList = [];
+              newLunchList.push(meal);
+            } else if (meal.meal === "夕食") {
+              newDinnerList = [];
+              newDinnerList.push(meal);
+            } else {
+              newSnackList = [];
+              newSnackList.push(meal);
+            }
+          }
+          setMorningList(newMorningList);
+          setLunchList(newLunchList);
+          setDinnerList(newDinnerList);
+          setSnackList(newSnackList);
+        });
+      if (newMorningList.length !== 0) {
+        for (let meal of newMorningList) {
+          await getMenuById(meal.mealId, "朝食");
         }
-        setMorningList(newMorningList);
-        setLunchList(newLunchList);
-        setDinnerList(newDinnerList);
-        setSnackList(newSnackList);
-      });
-    for (let meal of newMorningList) {
-      await getMenuById(meal.mealId, "朝食");
-    }
+      }
 
-    for (let meal of newLunchList) {
-      await getMenuById(meal.mealId, "昼食");
-    }
+      if (newLunchList.length !== 0) {
+        for (let meal of newLunchList) {
+          await getMenuById(meal.mealId, "昼食");
+        }
+      }
 
-    for (let meal of newDinnerList) {
-      await getMenuById(meal.mealId, "夕食");
-    }
+      if (newDinnerList.length !== 0) {
+        for (let meal of newDinnerList) {
+          await getMenuById(meal.mealId, "夕食");
+        }
+      }
 
-    for (let meal of newSnackList) {
-      await getMenuById(meal.mealId, "おやつ");
-    }
-  }, []);
+      if (newSnackList.length !== 0) {
+        for (let meal of newSnackList) {
+          await getMenuById(meal.mealId, "おやつ");
+        }
+      }
+    },
+    [morningMenuList]
+  );
 
   const getMenuById = useCallback(async (mealId: number, category: string) => {
+    console.log("call");
     let menuIdList: Array<number> = [];
     await axios
       .post("http://localhost:3001/api/post/targetMenu", {
@@ -82,19 +135,32 @@ export const useFetchMealById = () => {
   }, []);
 
   const getMenuList = useCallback(async (menuId: number, category: string) => {
+    let newMorningMenuList = [...morningMenuList];
+    let newLunchMenuList = [...lunchMenuList];
+    let newDinnerMenuList = [...dinnerMenuList];
+    let newSnackMenuList = [...snackMenuList];
     await axios
       .post("http://localhost:3001/api/post/targetMenuDetail", {
         menuId: menuId,
       })
       .then((response) => {
         if (category === "朝食") {
-          setMorningMenuList(response.data);
+          newMorningMenuList = [];
+          newMorningMenuList.push(response.data);
+          console.log(newMorningMenuList);
+          setMorningMenuList(newMorningMenuList);
         } else if (category === "昼食") {
-          setLunchMenuList(response.data);
+          newLunchMenuList = [];
+          newLunchMenuList.push(response.data);
+          setLunchMenuList(newLunchMenuList);
         } else if (category === "夕食") {
-          setDinnerMenuList(response.data);
+          newDinnerMenuList = [];
+          newDinnerMenuList.push(response.data);
+          setDinnerMenuList(newDinnerMenuList);
         } else {
-          setSnackMenuList(response.data);
+          newSnackMenuList = [];
+          newSnackMenuList.push(response.data);
+          setSnackMenuList(newSnackMenuList);
         }
       });
   }, []);
@@ -110,5 +176,6 @@ export const useFetchMealById = () => {
     lunchMenuList,
     dinnerMenuList,
     snackMenuList,
+    flag,
   };
 };

@@ -87,15 +87,32 @@ export const FoodListModal: FC<Props> = (props) => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>食材名</TableCell>
-              <TableCell align="right">数量</TableCell>
-              <TableCell align="right">期限</TableCell>
+              <TableCell
+                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+              >
+                食材名
+              </TableCell>
+              <TableCell
+                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                align="right"
+              >
+                数量
+              </TableCell>
+              <TableCell
+                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                align="right"
+              >
+                期限
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {foodList.map((food, index) => (
               <TableRow key={index}>
-                <TableCell scope="row">
+                <TableCell
+                  style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                  scope="row"
+                >
                   <Checkbox
                     size="small"
                     onChange={onChangeCheckBox(index)}
@@ -105,15 +122,28 @@ export const FoodListModal: FC<Props> = (props) => {
                 {(() => {
                   if (food.qSelect === 1) {
                     return (
-                      <TableCell align="right">{food.quantity}個</TableCell>
+                      <TableCell
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                        align="right"
+                      >
+                        {food.quantity}個
+                      </TableCell>
                     );
                   } else {
                     return (
-                      <TableCell align="right">{food.quantity}g</TableCell>
+                      <TableCell
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                        align="right"
+                      >
+                        {food.quantity}g
+                      </TableCell>
                     );
                   }
                 })()}
-                <TableCell align="right">
+                <TableCell
+                  style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                  align="right"
+                >
                   {new Date(food.bestBefore).toLocaleString().split(" ")[0]}
                 </TableCell>
               </TableRow>
@@ -123,7 +153,18 @@ export const FoodListModal: FC<Props> = (props) => {
       </TableContainer>
       {flag && (
         <div>
-          <Button variant="contained" onClick={onClickRegister}>
+          <Button
+            style={{
+              fontFamily: "'Zen Maru Gothic', sans-serif",
+              marginTop: "20px",
+              backgroundColor: "#FFAA2C",
+              color: "black",
+              boxShadow: "none",
+              height: "45px",
+            }}
+            variant="contained"
+            onClick={onClickRegister}
+          >
             選択した食材を登録する
           </Button>
         </div>

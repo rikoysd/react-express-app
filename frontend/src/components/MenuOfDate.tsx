@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { format } from "date-fns";
 import { useFetchMealById } from "../hooks/useFetchMealById";
@@ -17,6 +17,7 @@ export const MenuOfDate: FC<Props> = (props) => {
     lunchMenuList,
     dinnerMenuList,
     snackMenuList,
+    flag,
   } = useFetchMealById();
   const [displayCalenderDate, setDisplayCalenderDate] = useState<string>("");
 
@@ -28,13 +29,25 @@ export const MenuOfDate: FC<Props> = (props) => {
       await getMealById(nowDateStr);
     })();
 
-    // const newDate = props.calenderDate.split("-").join("/");
-    // setDisplayCalenderDate(newDate);
-    // console.log(newDate);
-    // getMealById(newDate);
+    if (props.calenderDate) {
+      changeDate(props.calenderDate);
+    }
   }, [props.calenderDate, calenderFlag]);
 
-  useEffect(() => {}, [morningMenuList]);
+  const changeDate = useCallback(
+    (date: string) => {
+      const newDate = date.split("-").join("/");
+      setDisplayCalenderDate(newDate);
+      (async () => {
+        await getMealById(newDate);
+      })();
+    },
+    [morningMenuList]
+  );
+
+  useEffect(() => {
+    console.log(morningMenuList);
+  }, [morningMenuList, flag]);
 
   return (
     <div>
@@ -48,36 +61,44 @@ export const MenuOfDate: FC<Props> = (props) => {
       <SContainer>
         <div>
           <h4>朝食</h4>
-          {morningMenuList.map((menu, index) => (
-            <ul key={index}>
-              <li>{menu.name}</li>
-            </ul>
-          ))}
+          <ul>
+            {morningMenuList.map((menu, index) => (
+              <li key={index}>{menu.name}</li>
+            ))}
+          </ul>
         </div>
-        <div>
+        {/* <div>
           <h4>昼食</h4>
           {lunchMenuList.map((menu, index) => (
             <ul key={index}>
               <li>{menu.name}</li>
             </ul>
           ))}
-        </div>
-        <div>
-          <h4>夕食</h4>
-          {dinnerMenuList.map((menu, index) => (
-            <ul key={index}>
-              <li>{menu.name}</li>
-            </ul>
-          ))}
-        </div>
-        <div>
-          <h4>おやつ</h4>
-          {snackMenuList.map((menu, index) => (
-            <ul key={index}>
-              <li>{menu.name}</li>
-            </ul>
-          ))}
-        </div>
+        </div> */}
+        {/* {(() => {
+            if (dinnerMenuList.length !== 0) {
+              <div>
+                <h4>夕食</h4>
+                {dinnerMenuList.map((menu, index) => (
+                  <ul key={index}>
+                    <li>{menu.name}</li>
+                  </ul>
+                ))}
+              </div>;
+            }
+          })()}
+          {(() => {
+            if (snackMenuList.length !== 0) {
+              <div>
+                <h4>おやつ</h4>
+                {snackMenuList.map((menu, index) => (
+                  <ul key={index}>
+                    <li>{menu.name}</li>
+                  </ul>
+                ))}
+              </div>;
+            }
+          })()} */}
       </SContainer>
     </div>
   );
