@@ -121,7 +121,6 @@ export const RegisterFood: FC = () => {
   const onClickRegisterFood = useCallback(async () => {
     // エラー処理
     const newErrorList = [...errorList];
-    console.log(newErrorList);
 
     if (purchaseDate?.toString() === "Invalid Date") {
       setPurchaseDateError("不正な日付です");

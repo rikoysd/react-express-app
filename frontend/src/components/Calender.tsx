@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useEffect } from "react";
+import { FC, useCallback } from "react";
 import FullCalendar, { DayCellContentArg } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { styled } from "@mui/material/styles";
@@ -28,6 +28,7 @@ export const Calender: FC<Props> = (props) => {
         dayCellContent={(e: DayCellContentArg) => {
           e.dayNumberText = e.dayNumberText.replace("日", "");
         }}
+        contentHeight="auto"
         locale="ja"
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"

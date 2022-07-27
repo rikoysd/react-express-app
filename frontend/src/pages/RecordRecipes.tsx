@@ -36,8 +36,6 @@ export const RecordRecipes: FC = () => {
   const [meal, setMeal] = useState<string>("朝食");
   // 料理名
   const [name, setName] = useState<string>("");
-  // メニューのフラグ
-  const [menuFlag, setMenuFlag] = useState<boolean>(false);
   // モーダルの表示・非表示
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -51,16 +49,22 @@ export const RecordRecipes: FC = () => {
   const [calenderDate, setCalenderDate] = useState<string>("");
   // 日付エラー
   const [dateError, setDateError] = useState<string>("");
+  // 名前のエラー
+  const [nameError, setNameError] = useState<string>("");
   // メニューリスト
   const [postMenuList, setPostMenuList] = useState<Menu[]>([]);
   // メニューリスト（表示用）
   const [displayMenuList, setDisplayMenuList] = useState<Menu[]>([]);
+  // メニューのエラー
+  const [menuError, setMenuError] = useState<string>("");
   const { menuList, getMenuList } = useFetchMenu();
   const { mealList, getMealList } = useFetchMeal();
   // 送信エラー
   const [submitError, setSubmitError] = useState<string>("");
   // 送信フラグ
   const [submitFlag, setSubmitFlag] = useState<boolean>(false);
+  // エラーリスト
+  const [errorList, setErrorList] = useState<boolean[]>([]);
 
   useEffect(() => {
     getMenuList();
@@ -97,17 +101,6 @@ export const RecordRecipes: FC = () => {
   };
 
   /**
-   * メニューの表示・非表示.
-   */
-  const onClickAddMenu = () => {
-    if (menuFlag === false) {
-      setMenuFlag(true);
-    } else {
-      setMenuFlag(false);
-    }
-  };
-
-  /**
    * 食材の削除
    * @param index - インデックス
    */
@@ -121,19 +114,26 @@ export const RecordRecipes: FC = () => {
    * メニューを追加する.
    */
   const onClickRegisterMenu = useCallback(() => {
-    const menu: Menu = {
-      menuId: -1,
-      name: name,
-      foodList: food,
-    };
     let newPostMenuList = [...postMenuList];
-    newPostMenuList.push(menu);
-    setPostMenuList(newPostMenuList);
-    setDisplayMenuList(newPostMenuList);
+    const newErrorList = [...errorList];
+    if (name === "") {
+      setNameError("食材名を入力してください");
+      newErrorList.push(true);
+    } else {
+      setNameError("");
+      const menu: Menu = {
+        menuId: -1,
+        name: name,
+        foodList: food,
+      };
+      newPostMenuList.push(menu);
+      setPostMenuList(newPostMenuList);
+      setDisplayMenuList(newPostMenuList);
 
-    // 入力値をクリアにする
-    setName("");
-    setFood([]);
+      // 入力値をクリアにする
+      setName("");
+      setFood([]);
+    }
   }, [name, food]);
 
   /**
@@ -141,6 +141,25 @@ export const RecordRecipes: FC = () => {
    */
   const onClickRegisterRecipe = useCallback(async () => {
     // エラー処理
+    let newErrorList = [...errorList];
+    newErrorList = [];
+
+    if (date?.toString() === "Invalid Date") {
+      setDateError("不正な日付です");
+      newErrorList.push(true);
+    } else {
+      setDateError("");
+    }
+
+    if (postMenuList.length === 0) {
+      setMenuError("メニューを一つ以上登録してください");
+      newErrorList.push(true);
+    }
+
+    if (newErrorList.length !== 0) {
+      setSubmitError("正しく入力されていない箇所があります");
+      return;
+    }
 
     let dateFormat = format(Number(date), "yyyy/MM/dd");
 
@@ -172,24 +191,24 @@ export const RecordRecipes: FC = () => {
       });
 
     // メニューの登録
-    for (let menu of postMenuList) {
+    const newMenuList = [...menuList];
+    for (let i = 0; i < postMenuList.length; i++) {
       // id採番
       let id = 0;
       let idList = [];
-      const newMenuList = [...menuList];
       if (newMenuList.length === 0) {
         id = 1;
       } else {
         for (let menu of newMenuList) {
           idList.push(menu.menuId);
         }
-        id = Math.max(...idList) + 1;
+        id = Math.max(...idList) + (i + 1);
       }
 
       await axios
         .post("http://localhost:3001/api/post/menuList", {
           menuId: id,
-          name: menu.name,
+          name: postMenuList[i].name,
         })
         .then((response) => {
           console.log(response);
@@ -201,8 +220,8 @@ export const RecordRecipes: FC = () => {
 
       const newMenu: Menu = {
         menuId: id,
-        name: menu.name,
-        foodList: menu.foodList,
+        name: postMenuList[i].name,
+        foodList: postMenuList[i].foodList,
       };
       newMenuList.push(newMenu);
       setPostMenuList(newMenuList);
@@ -222,7 +241,7 @@ export const RecordRecipes: FC = () => {
         });
 
       // メニューと食材idの登録
-      for (let food of menu.foodList) {
+      for (let food of postMenuList[i].foodList) {
         await axios
           .post("http://localhost:3001/api/post/menu_food", {
             menuId: id,
@@ -239,7 +258,19 @@ export const RecordRecipes: FC = () => {
     }
     // 表示用のメニューリストを空に
     setDisplayMenuList([]);
-  }, [date, meal, postMenuList, mealList]);
+  }, [date, meal, mealList]);
+
+  /**
+   * フォームリセット.
+   */
+  const onClickClear = () => {
+    setDate(new Date());
+    setMeal("朝食");
+    setName("");
+    setPostMenuList([]);
+    setDisplayMenuList([]);
+    setFood([]);
+  };
 
   return (
     <div>
@@ -283,10 +314,12 @@ export const RecordRecipes: FC = () => {
           </SFormPosition>
           <SItemBlock>
             <div>メニュー</div>
+            <div>{menuError}</div>
             <SMenu>
               <SItemBlock2>
                 <label htmlFor="name">
                   <SItem>料理名</SItem>
+                  <div>{nameError}</div>
                   <TextField
                     id="name"
                     variant="outlined"
@@ -383,6 +416,7 @@ export const RecordRecipes: FC = () => {
                   borderRadius: "5px",
                 }}
                 variant="contained"
+                onClick={onClickClear}
               >
                 クリア
               </Button>
