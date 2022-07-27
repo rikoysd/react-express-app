@@ -37,12 +37,12 @@ export const FoodListModal: FC<Props> = (props) => {
   useEffect(() => {
     (async () => {
       await getFoodList();
+      if (!foodList) {
+        setMessage("食材が登録されていません");
+      } else {
+        setMessage("");
+      }
     })();
-    if (foodList.length === 0) {
-      setMessage("食材が登録されていません");
-    } else {
-      setMessage("");
-    }
   }, [checkedFoodList]);
 
   /**
