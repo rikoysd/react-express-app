@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const Calender: FC<Props> = (props) => {
-  const { calenderFlag, setCalenderFlag } = props;
+  const { calenderFlag, setCalenderFlag,setCalenderDate } = props;
 
   /**
    * 日付を選択.

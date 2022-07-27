@@ -79,7 +79,7 @@ app.post("/api/delete/foodList", (req, res) => {
   });
 });
 
-// メニューの取得
+// 献立の取得
 app.get("/api/get/menuList", (req, res) => {
   const sqlSelect = "SELECT * FROM menulist";
   connections.query(sqlSelect, (err, result) => {
@@ -90,7 +90,7 @@ app.get("/api/get/menuList", (req, res) => {
   });
 });
 
-// メニューの登録
+// 献立の登録
 app.post("/api/post/menuList", (req, res) => {
   const menuId = req.body.menuId;
   const name = req.body.name;
@@ -111,7 +111,7 @@ app.post("/api/post/menuList", (req, res) => {
   );
 });
 
-// 献立とメニューidを登録
+// 食事とメニューidを登録
 app.post("/api/post/meal_menu", (req, res) => {
   const mealId = req.body.mealId;
   const menuId = req.body.menuId;
@@ -132,7 +132,7 @@ app.post("/api/post/meal_menu", (req, res) => {
   );
 });
 
-// メニューと食材idを登録
+// 献立と食材idを登録
 app.post("/api/post/menu_food", (req, res) => {
   const foodId = req.body.foodId;
   const menuId = req.body.menuId;
@@ -153,7 +153,7 @@ app.post("/api/post/menu_food", (req, res) => {
   );
 });
 
-// 献立の取得
+// 食事の取得
 app.get("/api/get/meal", (req, res) => {
   const sqlSelect = "SELECT * FROM meallist";
   connections.query(sqlSelect, (err, result) => {
@@ -164,7 +164,7 @@ app.get("/api/get/meal", (req, res) => {
   });
 });
 
-// 献立の登録
+// 食事の登録
 app.post("/api/post/mealList", (req, res) => {
   const mealId = req.body.mealId;
   const date = req.body.date;
@@ -185,6 +185,42 @@ app.post("/api/post/mealList", (req, res) => {
       res.send("Received POST Data!");
     }
   );
+});
+
+// 日付からその日の食事を取得
+app.post("/api/post/targetMeal", (req, res) => {
+  const date = req.body.date;
+  const sqlSelect = "SELECT * FROM meallist WHERE date = ?";
+  connections.query(sqlSelect, [date], (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
+// 食事からメニューを取得
+app.post("/api/post/targetMenu", (req, res) => {
+  const mealId = req.body.mealId;
+  const sqlSelect = "SELECT * FROM meal_menu WHERE mealId = ?";
+  connections.query(sqlSelect, [mealId], (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
+// メニューidからメニュー詳細を取得
+app.post("/api/post/targetMenuDetail", (req, res) => {
+  const menuId = req.body.menuId;
+  const sqlSelect = "SELECT * FROM menulist WHERE menuId = ?";
+  connections.query(sqlSelect, [menuId], (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
 });
 
 app.listen(port, () => {
