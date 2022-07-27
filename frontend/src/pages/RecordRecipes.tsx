@@ -244,39 +244,43 @@ export const RecordRecipes: FC = () => {
   return (
     <div>
       <SContainer>
-        <Calender
-          calenderFlag={calenderFlag}
-          setCalenderFlag={setCalenderFlag}
-          setCalenderDate={setCalenderDate}
-        ></Calender>
+        <SCalender>
+          <Calender
+            calenderFlag={calenderFlag}
+            setCalenderFlag={setCalenderFlag}
+            setCalenderDate={setCalenderDate}
+          ></Calender>
+        </SCalender>
         <div>
-          <SItemBlock>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <label htmlFor="date">
-                <SItem>日付</SItem>
-                <div>{dateError}</div>
-                <DesktopDatePicker
-                  inputFormat="yyyy/MM/dd"
-                  value={date}
-                  onChange={onChangeDate}
-                  renderInput={(params) => (
-                    <TextField {...params} style={{ width: "300px" }} />
-                  )}
-                />
-              </label>
-            </LocalizationProvider>
-          </SItemBlock>
-          <SItemBlock>
-            <SItem>食事</SItem>
-            <FormControl sx={{ width: "300px" }}>
-              <Select value={meal} onChange={onChangeMeal}>
-                <MenuItem value="朝食">朝食</MenuItem>
-                <MenuItem value="昼食">昼食</MenuItem>
-                <MenuItem value="夕食">夕食</MenuItem>
-                <MenuItem value="おやつ">おやつ</MenuItem>
-              </Select>
-            </FormControl>
-          </SItemBlock>
+          <SFormPosition>
+            <SItemBlock style={{ marginRight: "15px" }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <label htmlFor="date">
+                  <SItem>日付</SItem>
+                  <div>{dateError}</div>
+                  <DesktopDatePicker
+                    inputFormat="yyyy/MM/dd"
+                    value={date}
+                    onChange={onChangeDate}
+                    renderInput={(params) => (
+                      <TextField {...params} style={{ width: "250px" }} />
+                    )}
+                  />
+                </label>
+              </LocalizationProvider>
+            </SItemBlock>
+            <SItemBlock>
+              <SItem>食事</SItem>
+              <FormControl sx={{ width: "250px" }}>
+                <Select value={meal} onChange={onChangeMeal}>
+                  <MenuItem value="朝食">朝食</MenuItem>
+                  <MenuItem value="昼食">昼食</MenuItem>
+                  <MenuItem value="夕食">夕食</MenuItem>
+                  <MenuItem value="おやつ">おやつ</MenuItem>
+                </Select>
+              </FormControl>
+            </SItemBlock>
+          </SFormPosition>
           <SItemBlock>
             <div>メニュー</div>
             <SMenu>
@@ -293,42 +297,55 @@ export const RecordRecipes: FC = () => {
                   />
                 </label>
               </SItemBlock2>
-              <SItemBlock2>
-                <SItem>食材</SItem>
+              <SItemBlock2
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "end",
+                }}
+              >
                 <div>
-                  <Button
-                    style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-                    onClick={handleOpen}
-                  >
-                    追加する
-                  </Button>
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={style}>
-                      <FoodListModal handleClose={handleClose}></FoodListModal>
-                    </Box>
-                  </Modal>
+                  <SItem>食材</SItem>
+                  <div>
+                    <Button
+                      style={{
+                        fontFamily: "'Zen Maru Gothic', sans-serif",
+                        color: "#FFAA2C",
+                      }}
+                      onClick={handleOpen}
+                    >
+                      追加する
+                    </Button>
+                    <Modal
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={style}>
+                        <FoodListModal
+                          handleClose={handleClose}
+                        ></FoodListModal>
+                      </Box>
+                    </Modal>
+                  </div>
+                  {(() => {
+                    if (food.length !== 0) {
+                      return (
+                        <Stack direction="row" spacing={1}>
+                          {food.map((food, index) => (
+                            <div key={index}>
+                              <Chip
+                                label={food.name}
+                                onDelete={() => handleDelete(index)}
+                              />
+                            </div>
+                          ))}
+                        </Stack>
+                      );
+                    }
+                  })()}
                 </div>
-                {(() => {
-                  if (food.length !== 0) {
-                    return (
-                      <Stack direction="row" spacing={1}>
-                        {food.map((food, index) => (
-                          <div key={index}>
-                            <Chip
-                              label={food.name}
-                              onDelete={() => handleDelete(index)}
-                            />
-                          </div>
-                        ))}
-                      </Stack>
-                    );
-                  }
-                })()}
                 <Button
                   style={{
                     color: "black",
@@ -352,40 +369,42 @@ export const RecordRecipes: FC = () => {
             ))}
           </div>
           <div>{submitError}</div>
-          <div>
-            <Button
-              style={{
-                color: "black",
-                backgroundColor: "#FEE6C2",
-                fontFamily: "'Zen Maru Gothic', sans-serif",
-                boxShadow: "none",
-                marginRight: "20px",
-                height: "45px",
-                width: "160px",
-                borderRadius: "30px",
-              }}
-              variant="contained"
-            >
-              クリア
-            </Button>
-          </div>
-          <div>
-            <Button
-              style={{
-                color: "black",
-                backgroundColor: "#FFAA2C",
-                fontFamily: "'Zen Maru Gothic', sans-serif",
-                boxShadow: "none",
-                width: "160px",
-                height: "45px",
-                borderRadius: "30px",
-              }}
-              variant="contained"
-              onClick={onClickRegisterRecipe}
-            >
-              登録する
-            </Button>
-          </div>
+          <SButtonPosition>
+            <div>
+              <Button
+                style={{
+                  color: "black",
+                  backgroundColor: "#FEE6C2",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                  marginRight: "20px",
+                  height: "45px",
+                  width: "180px",
+                  borderRadius: "5px",
+                }}
+                variant="contained"
+              >
+                クリア
+              </Button>
+            </div>
+            <div>
+              <Button
+                style={{
+                  color: "black",
+                  backgroundColor: "#FFAA2C",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                  width: "180px",
+                  height: "45px",
+                  borderRadius: "5px",
+                }}
+                variant="contained"
+                onClick={onClickRegisterRecipe}
+              >
+                登録する
+              </Button>
+            </div>
+          </SButtonPosition>
         </div>
       </SContainer>
       <MenuOfDate
@@ -396,27 +415,25 @@ export const RecordRecipes: FC = () => {
   );
 };
 
+const SButtonPosition = styled("div")({
+  marginTop: "30px",
+  display: "flex",
+  justifyContent: "center",
+});
+
+const SCalender = styled("div")({
+  marginRight: "40px",
+});
+
 const SContainer = styled("div")({
   display: "flex",
+  justifyContent: "center",
+  margin: "60px 0",
 });
 
-const SMenu = styled("div")({
-  // backgroundColor: "#FFF5E5",
-  border: "1px solid #FFAA2C",
-  padding: "20px 15px",
-  margin: "10px",
+const SFormPosition = styled("div")({
+  display: "flex",
 });
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-};
 
 const SItem = styled("div")({
   marginBottom: "8px",
@@ -429,3 +446,22 @@ const SItemBlock = styled("div")({
 const SItemBlock2 = styled("div")({
   margin: "10px 0",
 });
+
+const SMenu = styled("div")({
+  // backgroundColor:"#FFF5DD",
+  border: "1px solid #FFAA2C",
+  padding: "20px 15px",
+  margin: "10px",
+  width: "500px",
+});
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+};

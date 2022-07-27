@@ -1,5 +1,5 @@
 import { FC, useCallback, useContext, useEffect } from "react";
-import FullCalendar from "@fullcalendar/react";
+import FullCalendar, { DayCellContentArg } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { styled } from "@mui/material/styles";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const Calender: FC<Props> = (props) => {
-  const { calenderFlag, setCalenderFlag,setCalenderDate } = props;
+  const { calenderFlag, setCalenderFlag, setCalenderDate } = props;
 
   /**
    * 日付を選択.
@@ -24,6 +24,11 @@ export const Calender: FC<Props> = (props) => {
   return (
     <SContainer>
       <FullCalendar
+        // 「日」の表示変更
+        dayCellContent={(e: DayCellContentArg) => {
+          e.dayNumberText = e.dayNumberText.replace("日", "");
+        }}
+        locale="ja"
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         dateClick={dateClick}
