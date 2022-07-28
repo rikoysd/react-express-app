@@ -12,13 +12,37 @@ export const Footer: FC = () => {
         </SFlex>
         <SFlex style={{ justifyContent: "center" }}>
           <SItem>
-            <NavLink to="/">ホーム</NavLink>
+            <NavLink
+              to="/"
+              style={{
+                textDecoration: "none",
+                color: "black",
+              }}
+            >
+              ホーム
+            </NavLink>
           </SItem>
           <SItem>
-            <div>会員登録</div>
+            <NavLink
+              to="/registerUser"
+              style={{
+                textDecoration: "none",
+                color: "black",
+              }}
+            >
+              会員登録
+            </NavLink>
           </SItem>
           <SItem>
-            <div>ログイン</div>
+            <NavLink
+              to="/login"
+              style={{
+                textDecoration: "none",
+                color: "black",
+              }}
+            >
+              ログイン
+            </NavLink>
           </SItem>
         </SFlex>
       </div>

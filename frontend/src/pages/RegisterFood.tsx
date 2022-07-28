@@ -30,8 +30,6 @@ export const RegisterFood: FC = () => {
   const [qSelect, setQSelect] = useState<string>("1");
   // 賞味期限・消費期限
   const [bestBefore, setBestBefore] = useState<Date | null>(new Date());
-  // エラーフラグ
-  const [flag, setFlag] = useState<boolean>(false);
   const { foodList, getFoodList } = useFetchRefrigerator();
   // 購入日エラー
   const [purchaseDateError, setPurchaseDateError] = useState<string>("");

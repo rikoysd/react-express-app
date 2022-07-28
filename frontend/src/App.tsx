@@ -5,6 +5,8 @@ import { RegisterFood } from "./pages/RegisterFood";
 import { RecordRecipes } from "./pages/RecordRecipes";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
+import { RegisterUser } from "./pages/RegisterUser";
+import { Login } from "./pages/Login";
 
 export const App: FC = () => {
   return (
@@ -20,6 +22,11 @@ export const App: FC = () => {
           path="/recordRecipes"
           element={<RecordRecipes></RecordRecipes>}
         ></Route>
+        <Route
+          path="/registerUser"
+          element={<RegisterUser></RegisterUser>}
+        ></Route>
+        <Route path="/login" element={<Login></Login>}></Route>
       </Routes>
       <Footer></Footer>
     </BrowserRouter>
