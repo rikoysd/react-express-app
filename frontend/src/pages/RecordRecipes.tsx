@@ -283,6 +283,7 @@ export const RecordRecipes: FC = () => {
           ></Calender>
         </SCalender>
         <div>
+          <h2>献立記録</h2>
           <SFormPosition>
             <SItemBlock style={{ marginRight: "15px" }}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -187,35 +187,12 @@ app.post("/api/post/mealList", (req, res) => {
   );
 });
 
-// 日付からその日の食事を取得
-app.post("/api/post/targetMeal", (req, res) => {
+// 日付から食事一覧を取得
+app.post("/api/post/mealListByDate", (req, res) => {
   const date = req.body.date;
-  const sqlSelect = "SELECT * FROM meallist WHERE date = ?";
+  const sqlSelect =
+    "SELECT meal_menu.mealId, meallist.date, meallist.meal, menulist.name from meallist LEFT OUTER JOIN meal_menu ON meallist.mealId = meal_menu.mealId LEFT OUTER JOIN menulist ON meal_menu.menuId = menulist.menuId WHERE meallist.date = ? ORDER BY meal_menu.mealId;";
   connections.query(sqlSelect, [date], (err, result) => {
-    if (err) {
-      throw err;
-    }
-    res.send(result);
-  });
-});
-
-// 食事からメニューを取得
-app.post("/api/post/targetMenu", (req, res) => {
-  const mealId = req.body.mealId;
-  const sqlSelect = "SELECT * FROM meal_menu WHERE mealId = ?";
-  connections.query(sqlSelect, [mealId], (err, result) => {
-    if (err) {
-      throw err;
-    }
-    res.send(result);
-  });
-});
-
-// メニューidからメニュー詳細を取得
-app.post("/api/post/targetMenuDetail", (req, res) => {
-  const menuId = req.body.menuId;
-  const sqlSelect = "SELECT * FROM menulist WHERE menuId = ?";
-  connections.query(sqlSelect, [menuId], (err, result) => {
     if (err) {
       throw err;
     }
