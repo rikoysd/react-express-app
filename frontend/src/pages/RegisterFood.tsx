@@ -193,143 +193,145 @@ export const RegisterFood: FC = () => {
   return (
     <SContainer>
       <FoodList bestBefore={bestBefore}></FoodList>
-      <SForm>
-        <div>
-          <SItemBlock>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <label htmlFor="purchaseDate">
-                <SItem>購入日（必須）</SItem>
-                <SError>{purchaseDateError}</SError>
-                <DesktopDatePicker
-                  inputFormat="yyyy/MM/dd"
-                  value={purchaseDate}
-                  onChange={onChangePurchaseDate}
-                  renderInput={(params) => (
-                    <TextField {...params} style={{ width: "300px" }} />
-                  )}
+      <div>
+        <SForm>
+          <div>
+            <SItemBlock>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <label htmlFor="purchaseDate">
+                  <SItem>購入日（必須）</SItem>
+                  <SError>{purchaseDateError}</SError>
+                  <DesktopDatePicker
+                    inputFormat="yyyy/MM/dd"
+                    value={purchaseDate}
+                    onChange={onChangePurchaseDate}
+                    renderInput={(params) => (
+                      <TextField {...params} style={{ width: "300px" }} />
+                    )}
+                  />
+                </label>
+              </LocalizationProvider>
+            </SItemBlock>
+            <SItemBlock>
+              <label htmlFor="name">
+                <SItem>食材名（必須）</SItem>
+                <SError>{nameError}</SError>
+                <TextField
+                  id="name"
+                  variant="outlined"
+                  value={name}
+                  onChange={onChangeName}
+                  size="small"
+                  style={{ width: "300px" }}
                 />
               </label>
-            </LocalizationProvider>
-          </SItemBlock>
-          <SItemBlock>
-            <label htmlFor="name">
-              <SItem>食材名（必須）</SItem>
-              <SError>{nameError}</SError>
-              <TextField
-                id="name"
-                variant="outlined"
-                value={name}
-                onChange={onChangeName}
-                size="small"
-                style={{ width: "300px" }}
-              />
-            </label>
-          </SItemBlock>
-          <SItemBlock>
-            <SItem>数量</SItem>
-            <RadioGroup defaultValue="1" onChange={onChangeQSelect}>
-              <FormControlLabel
-                value="1"
-                control={<Radio size="small"></Radio>}
-                label="個数"
-                checked={qSelect === "1"}
-              ></FormControlLabel>
-              <FormControlLabel
-                value="2"
-                control={<Radio size="small"></Radio>}
-                label="グラム数"
-                checked={qSelect === "2"}
-              ></FormControlLabel>
-            </RadioGroup>
-            {(() => {
-              if (qSelect === "1") {
-                return (
-                  <OutlinedInput
-                    id="outlined-basic"
-                    endAdornment={
-                      <InputAdornment position="end">個</InputAdornment>
-                    }
-                    style={{ width: "300px" }}
-                    size="small"
-                    value={quantity}
-                    onChange={onChangeQuantity}
-                  />
-                );
-              } else {
-                return (
-                  <OutlinedInput
-                    id="outlined-basic"
-                    endAdornment={
-                      <InputAdornment position="end">ｇ</InputAdornment>
-                    }
-                    style={{ width: "300px" }}
-                    size="small"
-                    value={quantity}
-                    onChange={onChangeQuantity}
-                  />
-                );
-              }
-            })()}
-          </SItemBlock>
-          <SItemBlock>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <label htmlFor="purchaseDate">
-                <SItem>賞味期限・消費期限</SItem>
-                <SError>{bestBeforeError}</SError>
-                <DesktopDatePicker
-                  inputFormat="yyyy/MM/dd"
-                  value={bestBefore}
-                  onChange={onChangeBestBefore}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      style={{
-                        width: "300px",
-                      }}
+            </SItemBlock>
+            <SItemBlock>
+              <SItem>数量</SItem>
+              <RadioGroup defaultValue="1" onChange={onChangeQSelect}>
+                <FormControlLabel
+                  value="1"
+                  control={<Radio size="small"></Radio>}
+                  label="個数"
+                  checked={qSelect === "1"}
+                ></FormControlLabel>
+                <FormControlLabel
+                  value="2"
+                  control={<Radio size="small"></Radio>}
+                  label="グラム数"
+                  checked={qSelect === "2"}
+                ></FormControlLabel>
+              </RadioGroup>
+              {(() => {
+                if (qSelect === "1") {
+                  return (
+                    <OutlinedInput
+                      id="outlined-basic"
+                      endAdornment={
+                        <InputAdornment position="end">個</InputAdornment>
+                      }
+                      style={{ width: "300px" }}
+                      size="small"
+                      value={quantity}
+                      onChange={onChangeQuantity}
                     />
-                  )}
-                />
-              </label>
-            </LocalizationProvider>
-          </SItemBlock>
+                  );
+                } else {
+                  return (
+                    <OutlinedInput
+                      id="outlined-basic"
+                      endAdornment={
+                        <InputAdornment position="end">ｇ</InputAdornment>
+                      }
+                      style={{ width: "300px" }}
+                      size="small"
+                      value={quantity}
+                      onChange={onChangeQuantity}
+                    />
+                  );
+                }
+              })()}
+            </SItemBlock>
+            <SItemBlock>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <label htmlFor="purchaseDate">
+                  <SItem>賞味期限・消費期限</SItem>
+                  <SError>{bestBeforeError}</SError>
+                  <DesktopDatePicker
+                    inputFormat="yyyy/MM/dd"
+                    value={bestBefore}
+                    onChange={onChangeBestBefore}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        style={{
+                          width: "300px",
+                        }}
+                      />
+                    )}
+                  />
+                </label>
+              </LocalizationProvider>
+            </SItemBlock>
+          </div>
+        </SForm>
+        <SForm>
           <SError>{registerError}</SError>
           <SButtonPosition>
-            <div>
-              <Button
-                style={{
-                  color: "black",
-                  backgroundColor: "#FEE6C2",
-                  fontFamily: "'Zen Maru Gothic', sans-serif",
-                  boxShadow: "none",
-                  marginRight: "20px",
-                  height: "45px",
-                  width: "160px",
-                  borderRadius: "30px",
-                }}
-                variant="contained"
-                onClick={onClickClear}
-              >
-                クリア
-              </Button>
-              <Button
-                style={{
-                  color: "black",
-                  backgroundColor: "#FFAA2C",
-                  fontFamily: "'Zen Maru Gothic', sans-serif",
-                  boxShadow: "none",
-                  width: "160px",
-                  height: "45px",
-                  borderRadius: "30px",
-                }}
-                variant="contained"
-                onClick={onClickRegisterFood}
-              >
-                食材を登録する
-              </Button>
-            </div>
+            <Button
+              style={{
+                color: "black",
+                backgroundColor: "#FEE6C2",
+                fontFamily: "'Zen Maru Gothic', sans-serif",
+                boxShadow: "none",
+                marginRight: "20px",
+                height: "45px",
+                width: "180px",
+                borderRadius: "5px",
+              }}
+              variant="contained"
+              onClick={onClickClear}
+            >
+              クリア
+            </Button>
+            <Button
+              style={{
+                color: "black",
+                backgroundColor: "#FFAA2C",
+                fontFamily: "'Zen Maru Gothic', sans-serif",
+                boxShadow: "none",
+                width: "180px",
+                height: "45px",
+                borderRadius: "5px",
+              }}
+              variant="contained"
+              onClick={onClickRegisterFood}
+            >
+              食材を登録する
+            </Button>
           </SButtonPosition>
-        </div>
-      </SForm>
+        </SForm>
+      </div>
     </SContainer>
   );
 };
@@ -337,7 +339,6 @@ export const RegisterFood: FC = () => {
 const SButtonPosition = styled("div")({
   marginTop: "30px",
   display: "flex",
-  justifyContent: "center",
 });
 
 const SContainer = styled("div")({

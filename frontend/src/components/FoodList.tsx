@@ -126,26 +126,41 @@ export const FoodList: FC<Props> = (props) => {
             );
           } else {
             return (
-              <Button
-                size="small"
-                style={{
-                  color: "black",
-                  backgroundColor: "#FEC062",
-                  fontFamily: "'Zen Maru Gothic', sans-serif",
-                  boxShadow: "none",
-                }}
-                variant="contained"
-                onClick={onClickFinished}
-              >
-                編集をやめる
-              </Button>
+              <div>
+                {checkFlag && flag && (
+                  <Button
+                    size="small"
+                    style={{
+                      color: "black",
+                      backgroundColor: "#FF7E35",
+                      fontFamily: "'Zen Maru Gothic', sans-serif",
+                      boxShadow: "none",
+                      marginRight: "10px",
+                    }}
+                    variant="contained"
+                    onClick={onClickDelete}
+                  >
+                    選択項目を削除
+                  </Button>
+                )}
+                <Button
+                  size="small"
+                  style={{
+                    color: "black",
+                    backgroundColor: "#FEC062",
+                    fontFamily: "'Zen Maru Gothic', sans-serif",
+                    boxShadow: "none",
+                  }}
+                  variant="contained"
+                  onClick={onClickFinished}
+                >
+                  編集をやめる
+                </Button>
+              </div>
             );
           }
         })()}
       </SPosition>
-      {checkFlag && flag && (
-        <button onClick={onClickDelete}>選択項目を削除</button>
-      )}
       <TableContainer
         sx={{
           width: 450,
