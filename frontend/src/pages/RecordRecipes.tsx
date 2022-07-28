@@ -393,13 +393,19 @@ export const RecordRecipes: FC = () => {
               </SItemBlock2>
             </SMenu>
           </SItemBlock>
-          <div>
-            {displayMenuList.map((menu, index) => (
-              <div key={index}>
-                <div>{menu.name}</div>
-              </div>
-            ))}
-          </div>
+          {(() => {
+            if (displayMenuList.length !== 0) {
+              return (
+                <SMenu2>
+                  {displayMenuList.map((menu, index) => (
+                    <div key={index}>
+                      <div>{menu.name}</div>
+                    </div>
+                  ))}
+                </SMenu2>
+              );
+            }
+          })()}
           <div>{submitError}</div>
           <SButtonPosition>
             <div>
@@ -482,11 +488,17 @@ const SItemBlock2 = styled("div")({
 });
 
 const SMenu = styled("div")({
-  // backgroundColor:"#FFF5DD",
   border: "1px solid #FFAA2C",
   padding: "20px 15px",
   margin: "10px",
   width: "500px",
+});
+
+const SMenu2 = styled("div")({
+  backgroundColor: "#FFF5DD",
+  padding: "20px 50px",
+  margin: "10px",
+  maxWidth: "500px",
 });
 
 const style = {
