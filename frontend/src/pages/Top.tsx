@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import top from "../img/top.png";
-import { hover } from "@testing-library/user-event/dist/hover";
 
 export const Top: FC = () => {
   const navigate = useNavigate();

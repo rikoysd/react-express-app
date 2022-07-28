@@ -4,6 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import { NavLink } from "react-router-dom";
 
 export const Header: FC = () => {
   return (
@@ -18,16 +19,22 @@ export const Header: FC = () => {
           color="inherit"
           aria-label="menu"
           sx={{ mr: 2 }}
-        >
-          {/* <MenuIcon /> */}
-        </IconButton>
+        ></IconButton>
         <Typography
           variant="h6"
           component="div"
           sx={{ flexGrow: 1 }}
           style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
         >
-          Raku Limiter
+          <NavLink
+            to="/"
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
+            Raku Limiter
+          </NavLink>
         </Typography>
         <Button
           color="inherit"
