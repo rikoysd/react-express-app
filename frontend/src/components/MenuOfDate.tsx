@@ -146,7 +146,6 @@ const SContainer = styled("div")({
 });
 
 const SBlock = styled("div")({
-  // border: "solid 1px",
   backgroundColor: "#FFF5DD",
   minWidth: "700px",
   minHeight: "150px",
