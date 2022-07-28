@@ -2,10 +2,12 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { format } from "date-fns";
 import { useFetchMealById } from "../hooks/useFetchMealById";
+import type { Menu } from "../types/menu";
 
 type Props = {
   calenderFlag: boolean;
   calenderDate: string;
+  displayMenuList: Array<Menu>;
 };
 
 export const MenuOfDate: FC<Props> = (props) => {
@@ -46,10 +48,12 @@ export const MenuOfDate: FC<Props> = (props) => {
     [morningMenuList]
   );
 
-  useEffect(() => {}, [morningMenuList, flag]);
+  useEffect(() => {
+    console.log("call");
+  }, [morningMenuList, props.displayMenuList, flag]);
 
   return (
-    <div>
+    <div style={{ marginBottom: "60px" }}>
       <SPosition>
         <SBlock2>
           {(() => {
@@ -62,75 +66,75 @@ export const MenuOfDate: FC<Props> = (props) => {
         </SBlock2>
       </SPosition>
       <SPosition>
-        <SBlock>
-          <SContainer>
+        < SBlock>
+          <div>
             {(() => {
               if (mealListById.length === 0) {
                 return <div>メニューが登録されていません</div>;
               } else {
                 return (
-                  <div>
+                  <SContainer>
                     {(() => {
                       if (morningMenuList.length !== 0) {
                         return (
-                          <div>
-                            <h4>朝食</h4>
+                          <SCategory>
+                             <h4>朝食</h4>
                             <ul>
                               {morningMenuList.map((menu, index) => (
                                 <li key={index}>{menu.name}</li>
                               ))}
                             </ul>
-                          </div>
+                          </SCategory>
                         );
                       }
                     })()}
                     {(() => {
                       if (lunchMenuList.length !== 0) {
                         return (
-                          <div>
+                          <SCategory>
                             <h4>昼食</h4>
-                            {lunchMenuList.map((menu, index) => (
-                              <ul key={index}>
-                                <li>{menu.name}</li>
-                              </ul>
-                            ))}
-                          </div>
+                            <ul>
+                              {lunchMenuList.map((menu, index) => (
+                                <li key={index}>{menu.name}</li>
+                              ))}
+                            </ul>
+                          </SCategory>
                         );
                       }
                     })()}
                     {(() => {
                       if (dinnerMenuList.length !== 0) {
                         return (
-                          <div>
+                          <SCategory>
                             <h4>夕食</h4>
-                            {dinnerMenuList.map((menu, index) => (
-                              <ul key={index}>
-                                <li>{menu.name}</li>
-                              </ul>
-                            ))}
-                          </div>
+                            <ul>
+                              {dinnerMenuList.map((menu, index) => (
+                                <li key={index}>{menu.name}</li>
+                              ))}
+                            </ul>
+                          </SCategory>
                         );
                       }
                     })()}
                     {(() => {
                       if (snackMenuList.length !== 0) {
                         return (
-                          <div>
+                          <SCategory>
                             <h4>おやつ</h4>
-                            {snackMenuList.map((menu, index) => (
-                              <ul key={index}>
-                                <li>{menu.name}</li>
-                              </ul>
-                            ))}
-                          </div>
+                            <ul>
+                              {snackMenuList.map((menu, index) => (
+                                <li key={index}>{menu.name}</li>
+                              ))}
+                            </ul>
+                          </SCategory>
                         );
                       }
                     })()}
-                  </div>
+                  </SContainer>
                 );
               }
             })()}
-          </SContainer>
+          </div>
         </SBlock>
       </SPosition>
     </div>
@@ -142,9 +146,10 @@ const SContainer = styled("div")({
 });
 
 const SBlock = styled("div")({
-  border: "solid 1px",
-  width: "700px",
-  height: "150px",
+  // border: "solid 1px",
+  backgroundColor: "#FFF5DD",
+  minWidth: "700px",
+  minHeight: "150px",
   padding: "20px 30px",
 });
 
@@ -155,4 +160,9 @@ const SBlock2 = styled("div")({
 const SPosition = styled("div")({
   display: "flex",
   justifyContent: "center",
+});
+
+const SCategory = styled("div")({
+  minWidth: "200px",
+  padding: "0 30px",
 });

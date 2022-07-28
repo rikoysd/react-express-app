@@ -61,8 +61,6 @@ export const RecordRecipes: FC = () => {
   const { mealList, getMealList } = useFetchMeal();
   // 送信エラー
   const [submitError, setSubmitError] = useState<string>("");
-  // 送信フラグ
-  const [submitFlag, setSubmitFlag] = useState<boolean>(false);
   // エラーリスト
   const [errorList, setErrorList] = useState<boolean[]>([]);
 
@@ -445,6 +443,7 @@ export const RecordRecipes: FC = () => {
       <MenuOfDate
         calenderFlag={calenderFlag}
         calenderDate={calenderDate}
+        displayMenuList={displayMenuList}
       ></MenuOfDate>
     </div>
   );
