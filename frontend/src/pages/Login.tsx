@@ -16,7 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import axios from "axios";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useNavigate } from "react-router-dom";
-import { SetLoginContext } from "../provider/LoginProvider";
+import { LoginContext, SetLoginContext } from "../provider/LoginProvider";
 
 interface State {
   password: string;

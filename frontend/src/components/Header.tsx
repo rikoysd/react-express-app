@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { SetLoginContext } from "../provider/LoginProvider";
+import { LoginContext, SetLoginContext } from "../provider/LoginProvider";
 
 type Props = {
   loginFlag: boolean;
@@ -138,19 +138,16 @@ export const Header: FC<Props> = (props) => {
             );
           } else {
             return (
-              <SFlex>
-                <div>rakus@gmail.com</div>
-                <Button
-                  color="inherit"
-                  style={{
-                    fontFamily: "'Zen Maru Gothic', sans-serif",
-                    marginLeft: "20px",
-                  }}
-                  onClick={onClickLogout}
-                >
-                  ログアウト
-                </Button>
-              </SFlex>
+              <Button
+                color="inherit"
+                style={{
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  marginLeft: "20px",
+                }}
+                onClick={onClickLogout}
+              >
+                ログアウト
+              </Button>
             );
           }
         })()}
@@ -158,8 +155,3 @@ export const Header: FC<Props> = (props) => {
     </AppBar>
   );
 };
-
-const SFlex = styled("div")({
-  display: "flex",
-  alignItems: "center",
-});

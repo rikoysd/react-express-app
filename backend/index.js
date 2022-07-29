@@ -1,5 +1,4 @@
 const express = require("express");
-// const cookieParser = require("cookie-parser");
 const mysql = require("mysql2");
 const app = express();
 const port = process.env.port || 3001;
@@ -11,7 +10,6 @@ app.use(
   })
 );
 app.use(express.json());
-// app.use(cookieParser());
 
 const connections = mysql.createConnection({
   host: "localhost",
