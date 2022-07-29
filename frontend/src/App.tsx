@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Top } from "./pages/Top";
 import { RegisterFood } from "./pages/RegisterFood";
@@ -9,9 +9,12 @@ import { RegisterUser } from "./pages/RegisterUser";
 import { Login } from "./pages/Login";
 
 export const App: FC = () => {
+  // ログインフラグ
+  const [loginFlag, setLoginFlag] = useState<boolean>(false);
+
   return (
     <BrowserRouter>
-      <Header></Header>
+      <Header loginFlag={loginFlag} setLoginFlag={setLoginFlag}></Header>
       <Routes>
         <Route path="/" element={<Top></Top>}></Route>
         <Route
@@ -26,7 +29,10 @@ export const App: FC = () => {
           path="/registerUser"
           element={<RegisterUser></RegisterUser>}
         ></Route>
-        <Route path="/login" element={<Login></Login>}></Route>
+        <Route
+          path="/login"
+          element={<Login setLoginFlag={setLoginFlag}></Login>}
+        ></Route>
       </Routes>
       <Footer></Footer>
     </BrowserRouter>

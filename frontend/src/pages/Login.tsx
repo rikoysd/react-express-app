@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useState,
+  useContext,
+} from "react";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -9,13 +16,18 @@ import IconButton from "@mui/material/IconButton";
 import axios from "axios";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useNavigate } from "react-router-dom";
+import { SetLoginContext } from "../provider/LoginProvider";
 
 interface State {
   password: string;
   showPassword: boolean;
 }
 
-export const Login: FC = () => {
+type Props = {
+  setLoginFlag: (boolean: boolean) => void;
+};
+
+export const Login: FC<Props> = (props) => {
   // メールアドレス
   const [mail, setMail] = useState<string>("");
   // メールアドレスのエラー
@@ -33,6 +45,8 @@ export const Login: FC = () => {
     showPassword: false,
   });
   const navigate = useNavigate();
+  const setLoginUser = useContext(SetLoginContext);
+  const { setLoginFlag } = props;
 
   useEffect(() => {
     getUserList();
@@ -105,7 +119,10 @@ export const Login: FC = () => {
         if (response.data.length === 0) {
           setLoginError("メールアドレスとパスワードが一致しませんでした");
         } else {
+          // ユーザーをグローバルステートにセット
+          setLoginUser(response.data);
           setLoginError("");
+          props.setLoginFlag(true);
 
           // 入力項目をクリアにする
           setMail("");
