@@ -1,4 +1,5 @@
 const express = require("express");
+// const cookieParser = require("cookie-parser");
 const mysql = require("mysql2");
 const app = express();
 const port = process.env.port || 3001;
@@ -10,6 +11,7 @@ app.use(
   })
 );
 app.use(express.json());
+// app.use(cookieParser());
 
 const connections = mysql.createConnection({
   host: "localhost",
@@ -227,6 +229,19 @@ app.post("/api/post/mealListByDate", (req, res) => {
   const sqlSelect =
     "SELECT meal_menu.mealId, meallist.date, meallist.meal, menulist.name from meallist LEFT OUTER JOIN meal_menu ON meallist.mealId = meal_menu.mealId LEFT OUTER JOIN menulist ON meal_menu.menuId = menulist.menuId WHERE meallist.date = ? ORDER BY meal_menu.mealId;";
   connections.query(sqlSelect, [date], (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
+// メールアドレスとパスワードからユーザー情報を取得
+app.post("/api/post/userById", (req, res) => {
+  const mailAddress = req.body.mailAddress;
+  const password = req.body.password;
+  const sqlSelect = "SELECT * FROM user WHERE mailAddress = ? AND password = ?";
+  connections.query(sqlSelect, [mailAddress, password], (err, result) => {
     if (err) {
       throw err;
     }

@@ -141,21 +141,20 @@ export const RegisterUser: FC = () => {
       })
       .then((response) => {
         console.log(response);
+        // 入力項目をクリアにする
+        setMail("");
+        setValues({
+          password: "",
+          showPassword: false,
+        });
+        navigate("/login");
       })
       .catch((err) => {
         console.log(err);
         setRegisterError("登録できませんでした");
       });
 
-    // 入力項目をクリアにする
-    setMail("");
-    setValues({
-      password: "",
-      showPassword: false,
-    });
     setErrorList([]);
-
-    navigate("/login");
   }, [userList, mail, values.password]);
 
   return (
