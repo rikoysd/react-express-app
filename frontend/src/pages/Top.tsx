@@ -8,17 +8,17 @@ export const Top: FC = () => {
   const navigate = useNavigate();
 
   /**
-   * 食材の登録ページに遷移.
+   * ユーザー登録ページに遷移.
    */
-  const onClickRegisterFood = () => {
-    navigate("/registerFood");
+  const onClickRegisterUser = () => {
+    navigate("/registerUser");
   };
 
   /**
-   * 献立の記録ページに遷移.
+   * ログインページに遷移.
    */
-  const onClickRecordRecipes = () => {
-    navigate("/recordRecipes");
+  const onClickLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -44,9 +44,9 @@ export const Top: FC = () => {
               marginBottom: "40px",
             }}
             variant="contained"
-            onClick={onClickRegisterFood}
+            onClick={onClickRegisterUser}
           >
-            食材を登録する
+            会員登録
           </Button>
         </div>
         <div>
@@ -61,9 +61,9 @@ export const Top: FC = () => {
               borderRadius: "5px",
             }}
             variant="contained"
-            onClick={onClickRecordRecipes}
+            onClick={onClickLogin}
           >
-            今日の献立を記録する{" "}
+            ログイン
           </Button>
         </div>
       </div>
