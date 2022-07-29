@@ -246,7 +246,7 @@ const SError = styled("div")({
 });
 
 const SExample = styled("div")({
-  color: "#C2C2C2",
+  color: "#878787",
   fontSize: "13px",
   marginTop: "5px",
 });
