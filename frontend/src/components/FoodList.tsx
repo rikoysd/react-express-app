@@ -199,6 +199,7 @@ export const FoodList: FC<Props> = (props) => {
                 >
                   {flag && (
                     <Checkbox
+                      style={{ padding: 0, marginRight: "10px" }}
                       size="small"
                       onChange={onChangeCheckBox(index)}
                     ></Checkbox>

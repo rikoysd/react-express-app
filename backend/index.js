@@ -25,6 +25,40 @@ connections.connect((error) => {
   console.log("Connected");
 });
 
+// ユーザー一覧を取得
+app.get("/api/get/user", (req, res) => {
+  const sqlSelect = "SELECT * FROM user";
+  connections.query(sqlSelect, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
+// ユーザーを登録する
+app.post("/api/post/user", (req, res) => {
+  const userId = req.body.userId;
+  const mailAddress = req.body.mailAddress;
+  const password = req.body.password;
+  const sqlInsert = "INSERT INTO user SET ?";
+  connections.query(
+    sqlInsert,
+    {
+      userId: userId,
+      mailAddress: mailAddress,
+      password: password,
+    },
+    (err, result) => {
+      if (err) {
+        throw err;
+      }
+      console.log(result);
+      res.send("Received POST Data!");
+    }
+  );
+});
+
 // 食材一覧を取得する
 app.get("/api/get/foodList", (req, res) => {
   const sqlSelect = "SELECT * FROM foodlist";
