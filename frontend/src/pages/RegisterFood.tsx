@@ -31,7 +31,7 @@ export const RegisterFood: FC<Props> = (props) => {
   // 名前のエラー
   const [nameError, setNameError] = useState<string>("");
   // 数量
-  const [quantity, setQuantity] = useState<number | string>(0);
+  const [quantity, setQuantity] = useState<string>("0");
   // 数量の選択
   const [qSelect, setQSelect] = useState<string>("1");
   // 賞味期限・消費期限
@@ -95,7 +95,8 @@ export const RegisterFood: FC<Props> = (props) => {
    * @param e
    */
   const onChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuantity(Number(e.target.value));
+    console.log(e.target.value);
+    setQuantity(String(e.target.value));
   };
 
   /**
@@ -121,7 +122,7 @@ export const RegisterFood: FC<Props> = (props) => {
     setPurchaseDate(new Date());
     setName("");
     setQSelect("1");
-    setQuantity(0);
+    setQuantity("0");
     setBestBefore(new Date());
     setPurchaseDateError("");
     setNameError("");
@@ -187,7 +188,7 @@ export const RegisterFood: FC<Props> = (props) => {
         name: name,
         purchaseDate: newPurchaseDate,
         qSelect: Number(qSelect),
-        quantity: quantity,
+        quantity: Number(quantity),
         bestBefore: newBestBefore,
       })
       .then((response) => {
@@ -215,7 +216,7 @@ export const RegisterFood: FC<Props> = (props) => {
     setPurchaseDate(new Date());
     setName("");
     setQSelect("1");
-    setQuantity(0);
+    setQuantity("0");
     setBestBefore(new Date());
   }, [purchaseDate, bestBefore, name, allFoodList]);
 
@@ -277,7 +278,9 @@ export const RegisterFood: FC<Props> = (props) => {
                     <OutlinedInput
                       id="outlined-basic"
                       endAdornment={
-                        <InputAdornment position="end">個</InputAdornment>
+                        <InputAdornment position="end">
+                          個
+                        </InputAdornment>
                       }
                       style={{ width: "300px" }}
                       size="small"

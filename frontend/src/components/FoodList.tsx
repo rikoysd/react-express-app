@@ -30,15 +30,9 @@ export const FoodList: FC<Props> = (props) => {
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
-    console.log("call");
     (async () => {
       await getFoodList(props.loginUser.userId);
     })();
-    // if (foodList.length === 0) {
-    //   setMessage("食材が登録されていません");
-    // } else {
-    //   setMessage("");
-    // }
   }, [bestBefore, checkedFoodList, checkFlag, flag]);
 
   /**

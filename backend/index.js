@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 const app = express();
 const port = process.env.port || 3001;
 const cors = require("cors");
+const path = require("path");
 
 app.use(
   cors({
@@ -10,6 +11,8 @@ app.use(
   })
 );
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 const connections = mysql.createConnection({
   host: "localhost",
@@ -314,6 +317,10 @@ app.post("/api/post/userById", (req, res) => {
     }
     res.send(result);
   });
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
 app.listen(port, () => {
