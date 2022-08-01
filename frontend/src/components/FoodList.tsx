@@ -9,14 +9,17 @@ import { useFetchRefrigerator } from "../hooks/useFetchRefrigerator";
 import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
 import axios from "axios";
-import { addHours } from "date-fns";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import type { User } from "../types/user";
 
 type Props = {
   bestBefore: Date | null;
+  loginUser: User;
 };
 
 export const FoodList: FC<Props> = (props) => {
-  const { bestBefore } = props;
+  const { bestBefore, loginUser } = props;
   const { foodList, getFoodList } = useFetchRefrigerator();
   // 編集ボタンのフラグ
   const [flag, setFlag] = useState<Boolean>(false);
@@ -28,14 +31,9 @@ export const FoodList: FC<Props> = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getFoodList();
+      await getFoodList(props.loginUser.userId);
     })();
-    if (foodList.length === 0) {
-      setMessage("食材が登録されていません");
-    } else {
-      setMessage("");
-    }
-  }, [bestBefore, checkedFoodList, checkFlag, flag, foodList]);
+  }, [bestBefore, checkedFoodList, checkFlag, flag]);
 
   /**
    * 編集する.
@@ -104,58 +102,167 @@ export const FoodList: FC<Props> = (props) => {
 
   return (
     <div>
-      <div>冷蔵庫一覧</div>
-      {(() => {
-        if (flag === false) {
-          return <button onClick={onClickEdit}>編集する</button>;
-        } else {
-          return <button onClick={onClickFinished}>編集をやめる</button>;
-        }
-      })()}
-      {checkFlag && flag && (
-        <button onClick={onClickDelete}>選択項目を削除</button>
-      )}
-      <TableContainer sx={{ width: 560 }}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>食材名</TableCell>
-              <TableCell align="right">数量</TableCell>
-              <TableCell align="right">期限</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {foodList.map((food, index) => (
-              <TableRow key={index}>
-                <TableCell scope="row">
-                  {flag && (
-                    <Checkbox
-                      size="small"
-                      onChange={onChangeCheckBox(index)}
-                    ></Checkbox>
-                  )}
-                  {food.name}
-                </TableCell>
-                {(() => {
-                  if (food.qSelect === 1) {
-                    return (
-                      <TableCell align="right">{food.quantity}個</TableCell>
-                    );
-                  } else {
-                    return (
-                      <TableCell align="right">{food.quantity}g</TableCell>
-                    );
-                  }
-                })()}
-                <TableCell align="right">
-                  {new Date(food.bestBefore).toLocaleString().split(" ")[0]}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <SPosition>
+        <div>冷蔵庫一覧</div>
+        {(() => {
+          if (flag === false) {
+            return (
+              <Button
+                size="small"
+                style={{
+                  color: "black",
+                  backgroundColor: "#FEC062",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                }}
+                variant="contained"
+                onClick={onClickEdit}
+              >
+                編集する
+              </Button>
+            );
+          } else {
+            return (
+              <div>
+                {checkFlag && (
+                  <Button
+                    size="small"
+                    style={{
+                      color: "black",
+                      backgroundColor: "#FF7E35",
+                      fontFamily: "'Zen Maru Gothic', sans-serif",
+                      boxShadow: "none",
+                      marginRight: "10px",
+                    }}
+                    variant="contained"
+                    onClick={onClickDelete}
+                  >
+                    選択項目を削除
+                  </Button>
+                )}
+                <Button
+                  size="small"
+                  style={{
+                    color: "black",
+                    backgroundColor: "#FEC062",
+                    fontFamily: "'Zen Maru Gothic', sans-serif",
+                    boxShadow: "none",
+                  }}
+                  variant="contained"
+                  onClick={onClickFinished}
+                >
+                  編集をやめる
+                </Button>
+              </div>
+            );
+          }
+        })()}
+      </SPosition>
+      <TableContainer
+        sx={{
+          width: "450px",
+          height: "500px",
+          border: "solid 2px #FEC062",
+          padding: "10px",
+        }}
+      >
+        {(() => {
+          if (foodList.length !== 0) {
+            return (
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                    >
+                      食材名
+                    </TableCell>
+                    <TableCell
+                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      align="right"
+                    >
+                      数量
+                    </TableCell>
+                    <TableCell
+                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      align="right"
+                    >
+                      期限
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {foodList.map((food, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        scope="row"
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      >
+                        {flag && (
+                          <Checkbox
+                            style={{ padding: 0, marginRight: "10px" }}
+                            size="small"
+                            onChange={onChangeCheckBox(index)}
+                          ></Checkbox>
+                        )}
+                        {food.name}
+                      </TableCell>
+                      {(() => {
+                        if (food.qSelect === 1) {
+                          return (
+                            <TableCell
+                              align="right"
+                              style={{
+                                fontFamily: "'Zen Maru Gothic', sans-serif",
+                              }}
+                            >
+                              {food.quantity}個
+                            </TableCell>
+                          );
+                        } else {
+                          return (
+                            <TableCell
+                              align="right"
+                              style={{
+                                fontFamily: "'Zen Maru Gothic', sans-serif",
+                              }}
+                            >
+                              {food.quantity}g
+                            </TableCell>
+                          );
+                        }
+                      })()}
+                      <TableCell
+                        align="right"
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      >
+                        {
+                          new Date(food.bestBefore)
+                            .toLocaleString()
+                            .split(" ")[0]
+                        }
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            );
+          } else {
+            return <SMsg>食材が登録されていません</SMsg>;
+          }
+        })()}
       </TableContainer>
-      <div>{message}</div>
     </div>
   );
 };
+
+const SPosition = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: "10px",
+});
+
+const SMsg = styled("div")({
+  margin: "10px 20px",
+});
