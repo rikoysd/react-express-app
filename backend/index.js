@@ -166,6 +166,27 @@ app.post("/api/post/meal_menu", (req, res) => {
   );
 });
 
+// ユーザーidと食材idを登録
+app.post("/api/post/user_food", (req, res) => {
+  const userId = req.body.userId;
+  const foodId = req.body.foodId;
+  const sqlInsert = "INSERT INTO user_food SET ?";
+  connections.query(
+    sqlInsert,
+    {
+      userId: userId,
+      foodId: foodId,
+    },
+    (err, result) => {
+      if (err) {
+        throw err;
+      }
+      console.log(result);
+      res.send("Received POST Data!");
+    }
+  );
+});
+
 // 献立と食材idを登録
 app.post("/api/post/menu_food", (req, res) => {
   const foodId = req.body.foodId;
@@ -245,6 +266,19 @@ app.post("/api/post/userById", (req, res) => {
     }
     res.send(result);
   });
+});
+
+// ユーザーidから食材一覧を取得
+app.post("/api/post/foodListById", (req, res) => {
+  const userId = req.body.userId;
+  const sqlSelect =
+    "SELECT * FROM user_food LEFT OUTER JOIN foodlist ON user_food.foodId = foodlist.foodId WHERE user_food.userId = ?";
+    connections.query(sqlSelect,[userId],(err, result) => {
+      if (err) {
+        throw err;
+      }
+      res.send(result);
+    });
 });
 
 app.listen(port, () => {

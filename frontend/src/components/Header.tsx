@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect } from "react";
+import { FC, useCallback, useContext, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -6,20 +6,22 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../provider/LoginProvider";
+import type { User } from "../types/user";
 import { styled } from "@mui/material/styles";
-import { LoginContext, SetLoginContext } from "../provider/LoginProvider";
 
 type Props = {
   loginFlag: boolean;
   setLoginFlag: (boolean: boolean) => void;
+  loginUser: User;
 };
 
 export const Header: FC<Props> = (props) => {
   const navigate = useNavigate();
   const { loginFlag, setLoginFlag } = props;
-  const setLoginUser = useContext(SetLoginContext);
+  const login = useContext(LoginContext);
 
-  useEffect(() => {}, [props.loginFlag]);
+  useEffect(() => {}, [props.loginFlag, props.loginUser]);
 
   const onClickRegisterUser = () => {
     navigate("/registerUser");
@@ -35,15 +37,15 @@ export const Header: FC<Props> = (props) => {
   /**
    * ログアウト.
    */
-  const onClickLogout = () => {
-    setLoginUser({
+  const onClickLogout = useCallback(() => {
+    login?.setLoginUser({
       userId: 0,
       mailAddress: "",
       password: "",
     });
     props.setLoginFlag(false);
     navigate("/");
-  };
+  }, [login?.loginUser]);
 
   /**
    * 冷蔵庫一覧ページに遷移.
@@ -138,16 +140,19 @@ export const Header: FC<Props> = (props) => {
             );
           } else {
             return (
-              <Button
-                color="inherit"
-                style={{
-                  fontFamily: "'Zen Maru Gothic', sans-serif",
-                  marginLeft: "20px",
-                }}
-                onClick={onClickLogout}
-              >
-                ログアウト
-              </Button>
+              <SFlex>
+                <div>{props.loginUser.mailAddress}</div>
+                <Button
+                  color="inherit"
+                  style={{
+                    fontFamily: "'Zen Maru Gothic', sans-serif",
+                    marginLeft: "20px",
+                  }}
+                  onClick={onClickLogout}
+                >
+                  ログアウト
+                </Button>
+              </SFlex>
             );
           }
         })()}
@@ -155,3 +160,8 @@ export const Header: FC<Props> = (props) => {
     </AppBar>
   );
 };
+
+const SFlex = styled("div")({
+  display: "flex",
+  alignItems: "center",
+});

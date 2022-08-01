@@ -4,7 +4,6 @@ import {
   useCallback,
   useEffect,
   useState,
-  useContext,
 } from "react";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
@@ -16,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import axios from "axios";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useNavigate } from "react-router-dom";
-import { LoginContext, SetLoginContext } from "../provider/LoginProvider";
+import type { User } from "../types/user";
 
 interface State {
   password: string;
@@ -24,7 +23,9 @@ interface State {
 }
 
 type Props = {
+  loginFlag: boolean;
   setLoginFlag: (boolean: boolean) => void;
+  setLoginUser: (user: User) => void;
 };
 
 export const Login: FC<Props> = (props) => {
@@ -45,8 +46,7 @@ export const Login: FC<Props> = (props) => {
     showPassword: false,
   });
   const navigate = useNavigate();
-  const setLoginUser = useContext(SetLoginContext);
-  const { setLoginFlag } = props;
+  const { setLoginUser, setLoginFlag } = props;
 
   useEffect(() => {
     getUserList();
@@ -119,8 +119,7 @@ export const Login: FC<Props> = (props) => {
         if (response.data.length === 0) {
           setLoginError("メールアドレスとパスワードが一致しませんでした");
         } else {
-          // ユーザーをグローバルステートにセット
-          setLoginUser(response.data);
+          props.setLoginUser(response.data[0]);
           setLoginError("");
           props.setLoginFlag(true);
 

@@ -17,9 +17,11 @@ import Checkbox from "@mui/material/Checkbox";
 import type { Refrigerator } from "../types/refrigerator";
 import Button from "@mui/material/Button";
 import { SetFoodContext } from "../provider/FoodProvider";
+import type { User } from "../types/user";
 
 type Props = {
   handleClose: () => void;
+  loginUser: User;
 };
 
 export const FoodListModal: FC<Props> = (props) => {
@@ -32,11 +34,11 @@ export const FoodListModal: FC<Props> = (props) => {
   const [flag, setFlag] = useState<boolean>(false);
   // 食材のグローバル管理（set関数）
   const setFood = useContext(SetFoodContext);
-  const { handleClose } = props;
+  const { handleClose, loginUser } = props;
 
   useEffect(() => {
     (async () => {
-      await getFoodList();
+      await getFoodList(props.loginUser.userId);
       if (!foodList) {
         setMessage("食材が登録されていません");
       } else {

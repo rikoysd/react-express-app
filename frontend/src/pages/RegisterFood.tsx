@@ -16,8 +16,14 @@ import { format } from "date-fns";
 import { FoodList } from "../components/FoodList";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import type { User } from "../types/user";
+import { useNavigate } from "react-router-dom";
 
-export const RegisterFood: FC = () => {
+type Props = {
+  loginUser: User;
+};
+
+export const RegisterFood: FC<Props> = (props) => {
   // 購入日
   const [purchaseDate, setPurchaseDate] = useState<Date | null>(new Date());
   // 名前
@@ -30,7 +36,8 @@ export const RegisterFood: FC = () => {
   const [qSelect, setQSelect] = useState<string>("1");
   // 賞味期限・消費期限
   const [bestBefore, setBestBefore] = useState<Date | null>(new Date());
-  const { foodList, getFoodList } = useFetchRefrigerator();
+  const { foodList, getFoodList, getAllFoodList, allFoodList } =
+    useFetchRefrigerator();
   // 購入日エラー
   const [purchaseDateError, setPurchaseDateError] = useState<string>("");
   // 賞味期限エラー
@@ -39,9 +46,16 @@ export const RegisterFood: FC = () => {
   const [registerError, setRegisterError] = useState<string>("");
   // エラーリスト
   const [errorList, setErrorList] = useState<boolean[]>([]);
+  const { loginUser } = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getFoodList();
+    if (props.loginUser.userId) {
+      getFoodList(props.loginUser.userId);
+      getAllFoodList();
+    } else {
+      navigate("/login");
+    }
   }, [bestBefore, purchaseDate]);
 
   /**
@@ -110,7 +124,9 @@ export const RegisterFood: FC = () => {
     setQuantity(0);
     setBestBefore(new Date());
     setPurchaseDateError("");
+    setNameError("");
     setBestBeforeError("");
+    setRegisterError("");
   };
 
   /**
@@ -146,13 +162,15 @@ export const RegisterFood: FC = () => {
       return;
     }
 
+    console.log(allFoodList);
+
     // id採番
     let id = 0;
     let idList = [];
-    if (foodList.length === 0) {
+    if (allFoodList.length === 0) {
       id = 1;
     } else {
-      for (let food of foodList) {
+      for (let food of allFoodList) {
         idList.push(food.foodId);
       }
       id = Math.max(...idList) + 1;
@@ -180,17 +198,30 @@ export const RegisterFood: FC = () => {
         setRegisterError("登録できませんでした");
       });
 
+    await axios
+      .post("http://localhost:3001/api/post/user_food", {
+        userId: props.loginUser.userId,
+        foodId: id,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+        setRegisterError("登録できませんでした");
+      });
+
     // 入力項目をクリアにする
     setPurchaseDate(new Date());
     setName("");
     setQSelect("1");
     setQuantity(0);
     setBestBefore(new Date());
-  }, [purchaseDate, bestBefore, name]);
+  }, [purchaseDate, bestBefore, name, allFoodList]);
 
   return (
     <SContainer>
-      <FoodList bestBefore={bestBefore}></FoodList>
+      <FoodList bestBefore={bestBefore} loginUser={props.loginUser}></FoodList>
       <div>
         <SForm>
           <div>
@@ -294,40 +325,42 @@ export const RegisterFood: FC = () => {
           </div>
         </SForm>
         <SForm>
-          <SError>{registerError}</SError>
-          <SButtonPosition>
-            <Button
-              style={{
-                color: "black",
-                backgroundColor: "#FEE6C2",
-                fontFamily: "'Zen Maru Gothic', sans-serif",
-                boxShadow: "none",
-                marginRight: "20px",
-                height: "45px",
-                width: "180px",
-                borderRadius: "5px",
-              }}
-              variant="contained"
-              onClick={onClickClear}
-            >
-              クリア
-            </Button>
-            <Button
-              style={{
-                color: "black",
-                backgroundColor: "#FFAA2C",
-                fontFamily: "'Zen Maru Gothic', sans-serif",
-                boxShadow: "none",
-                width: "180px",
-                height: "45px",
-                borderRadius: "5px",
-              }}
-              variant="contained"
-              onClick={onClickRegisterFood}
-            >
-              食材を登録する
-            </Button>
-          </SButtonPosition>
+          <div>
+            <SError style={{ textAlign: "center" }}>{registerError}</SError>
+            <SButtonPosition>
+              <Button
+                style={{
+                  color: "black",
+                  backgroundColor: "#FEE6C2",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                  marginRight: "20px",
+                  height: "45px",
+                  width: "180px",
+                  borderRadius: "5px",
+                }}
+                variant="contained"
+                onClick={onClickClear}
+              >
+                クリア
+              </Button>
+              <Button
+                style={{
+                  color: "black",
+                  backgroundColor: "#FFAA2C",
+                  fontFamily: "'Zen Maru Gothic', sans-serif",
+                  boxShadow: "none",
+                  width: "180px",
+                  height: "45px",
+                  borderRadius: "5px",
+                }}
+                variant="contained"
+                onClick={onClickRegisterFood}
+              >
+                食材を登録する
+              </Button>
+            </SButtonPosition>
+          </div>
         </SForm>
       </div>
     </SContainer>

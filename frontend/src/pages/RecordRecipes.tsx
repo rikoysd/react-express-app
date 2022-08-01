@@ -28,8 +28,14 @@ import { useFetchMenu } from "../hooks/useFetchMenu";
 import { format } from "date-fns/esm";
 import { useFetchMeal } from "../hooks/useFetchMeal";
 import axios from "axios";
+import type { User } from "../types/user";
+import { useNavigate } from "react-router-dom";
 
-export const RecordRecipes: FC = () => {
+type Props = {
+  loginUser: User;
+};
+
+export const RecordRecipes: FC<Props> = (props) => {
   // 日付
   const [date, setDate] = useState<Date | null>(new Date());
   // 食事
@@ -63,10 +69,16 @@ export const RecordRecipes: FC = () => {
   const [submitError, setSubmitError] = useState<string>("");
   // エラーリスト
   const [errorList, setErrorList] = useState<boolean[]>([]);
+  const { loginUser } = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getMenuList();
-    getMealList();
+    if (props.loginUser) {
+      getMenuList();
+      getMealList();
+    } else {
+      navigate("/login");
+    }
   }, [flag, calenderDate, food]);
 
   /**
@@ -357,6 +369,7 @@ export const RecordRecipes: FC = () => {
                       <Box sx={style}>
                         <FoodListModal
                           handleClose={handleClose}
+                          loginUser={props.loginUser}
                         ></FoodListModal>
                       </Box>
                     </Modal>

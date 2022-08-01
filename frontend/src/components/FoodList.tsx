@@ -11,13 +11,15 @@ import type { Refrigerator } from "../types/refrigerator";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
+import type { User } from "../types/user";
 
 type Props = {
   bestBefore: Date | null;
+  loginUser: User;
 };
 
 export const FoodList: FC<Props> = (props) => {
-  const { bestBefore } = props;
+  const { bestBefore, loginUser } = props;
   const { foodList, getFoodList } = useFetchRefrigerator();
   // 編集ボタンのフラグ
   const [flag, setFlag] = useState<Boolean>(false);
@@ -29,7 +31,7 @@ export const FoodList: FC<Props> = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getFoodList();
+      await getFoodList(props.loginUser.userId);
     })();
     if (foodList.length === 0) {
       setMessage("食材が登録されていません");
@@ -163,7 +165,8 @@ export const FoodList: FC<Props> = (props) => {
       </SPosition>
       <TableContainer
         sx={{
-          width: 450,
+          width: "450px",
+          height: "500px",
           border: "solid 2px #FEC062",
           padding: "10px",
         }}
@@ -237,8 +240,8 @@ export const FoodList: FC<Props> = (props) => {
             ))}
           </TableBody>
         </Table>
+        <SMsg>{message}</SMsg>
       </TableContainer>
-      <div>{message}</div>
     </div>
   );
 };
@@ -248,4 +251,8 @@ const SPosition = styled("div")({
   alignItems: "center",
   justifyContent: "space-between",
   marginBottom: "10px",
+});
+
+const SMsg = styled("div")({
+  margin: "10px 20px",
 });

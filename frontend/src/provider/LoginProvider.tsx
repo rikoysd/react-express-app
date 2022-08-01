@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  Dispatch,
   FC,
   ReactNode,
   useState,
@@ -11,14 +10,12 @@ type Props = {
   children: ReactNode;
 };
 
-export const LoginContext = createContext<User>({
-  userId: 0,
-  mailAddress: "",
-  password: "",
-});
-export const SetLoginContext = createContext<Dispatch<User>>(
-  () => undefined
-);
+type LoginType = {
+  loginUser: User;
+  setLoginUser: React.Dispatch<React.SetStateAction<User>>;
+};
+
+export const LoginContext = createContext<LoginType | null>(null);
 
 export const LoginProvider: FC<Props> = (props) => {
   const { children } = props;
@@ -31,10 +28,8 @@ export const LoginProvider: FC<Props> = (props) => {
   });
 
   return (
-    <LoginContext.Provider value={loginUser}>
-      <SetLoginContext.Provider value={setLoginUser}>
-        {children}
-      </SetLoginContext.Provider>
+    <LoginContext.Provider value={{ loginUser, setLoginUser }}>
+      {children}
     </LoginContext.Provider>
   );
 };
