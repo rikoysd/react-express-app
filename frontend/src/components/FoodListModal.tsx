@@ -25,7 +25,6 @@ type Props = {
 };
 
 export const FoodListModal: FC<Props> = (props) => {
-  const { foodList, getFoodList } = useFetchRefrigerator();
   // チェックした食材リスト
   const [checkedFoodList, setCheckedFoodList] = useState<Refrigerator[]>([]);
   // メッセージ
@@ -34,6 +33,7 @@ export const FoodListModal: FC<Props> = (props) => {
   const [flag, setFlag] = useState<boolean>(false);
   // 食材のグローバル管理（set関数）
   const setFood = useContext(SetFoodContext);
+  const { foodList, getFoodList } = useFetchRefrigerator();
   const { handleClose, loginUser } = props;
 
   useEffect(() => {
