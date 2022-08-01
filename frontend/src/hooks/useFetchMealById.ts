@@ -26,6 +26,7 @@ export const useFetchMealById = () => {
         date: date,
       })
       .then((response) => {
+        console.log(response.data);
         setMealListById(response.data);
 
         if (response.data.length === 0) {

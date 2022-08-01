@@ -76,12 +76,11 @@ export const RecordRecipes: FC<Props> = (props) => {
     if (props.loginUser.userId) {
       getMenuList();
       getAllMealList();
-      getMealList(props.loginUser.userId)
+      getMealList(props.loginUser.userId);
     } else {
       navigate("/login");
     }
   }, [flag, calenderDate, food]);
-
 
   /**
    * 日付を選択.
@@ -129,7 +128,7 @@ export const RecordRecipes: FC<Props> = (props) => {
     let newPostMenuList = [...postMenuList];
     const newErrorList = [...errorList];
     if (name === "") {
-      setNameError("食材名を入力してください");
+      setNameError("料理名を入力してください");
       newErrorList.push(true);
     } else {
       setNameError("");
@@ -146,7 +145,7 @@ export const RecordRecipes: FC<Props> = (props) => {
       setName("");
       setFood([]);
     }
-  }, [name, food]);
+  }, [name, food, displayMenuList]);
 
   /**
    * 献立を登録する.
@@ -195,6 +194,7 @@ export const RecordRecipes: FC<Props> = (props) => {
       })
       .then((response) => {
         console.log(response);
+        setSubmitError("");
       })
       .catch((err) => {
         console.log(err);
@@ -210,6 +210,7 @@ export const RecordRecipes: FC<Props> = (props) => {
       })
       .then((response) => {
         console.log(response);
+        setSubmitError("");
       })
       .catch((err) => {
         console.log(err);
@@ -237,20 +238,17 @@ export const RecordRecipes: FC<Props> = (props) => {
           name: postMenuList[i].name,
         })
         .then((response) => {
-          console.log(response);
+          const newMenu: Menu = {
+            menuId: id,
+            name: postMenuList[i].name,
+            foodList: postMenuList[i].foodList,
+          };
+          newMenuList.push(newMenu);
         })
         .catch((err) => {
           console.log(err);
           setSubmitError("登録できませんでした");
         });
-
-      const newMenu: Menu = {
-        menuId: id,
-        name: postMenuList[i].name,
-        foodList: postMenuList[i].foodList,
-      };
-      newMenuList.push(newMenu);
-      setPostMenuList(newMenuList);
 
       // 献立とメニューidの登録
       await axios
@@ -284,6 +282,7 @@ export const RecordRecipes: FC<Props> = (props) => {
     }
     // 表示用のメニューリストを空に
     setDisplayMenuList([]);
+    setPostMenuList([]);
   }, [date, meal, mealList]);
 
   /**
@@ -296,7 +295,14 @@ export const RecordRecipes: FC<Props> = (props) => {
     setPostMenuList([]);
     setDisplayMenuList([]);
     setFood([]);
+    setNameError("");
+    setDateError("");
+    setMenuError("");
+    setSubmitError("");
   };
+
+  useEffect(() => {
+  }, [displayMenuList, postMenuList]);
 
   return (
     <div>
@@ -315,7 +321,7 @@ export const RecordRecipes: FC<Props> = (props) => {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <label htmlFor="date">
                   <SItem>日付</SItem>
-                  <div>{dateError}</div>
+                  <SError>{dateError}</SError>
                   <DesktopDatePicker
                     inputFormat="yyyy/MM/dd"
                     value={date}
@@ -341,12 +347,12 @@ export const RecordRecipes: FC<Props> = (props) => {
           </SFormPosition>
           <SItemBlock>
             <div>メニュー</div>
-            <div>{menuError}</div>
+            <SError>{menuError}</SError>
             <SMenu>
               <SItemBlock2>
                 <label htmlFor="name">
                   <SItem>料理名</SItem>
-                  <div>{nameError}</div>
+                  <SError>{nameError}</SError>
                   <TextField
                     id="name"
                     variant="outlined"
@@ -435,7 +441,7 @@ export const RecordRecipes: FC<Props> = (props) => {
               );
             }
           })()}
-          <div>{submitError}</div>
+          <SError style={{ textAlign: "center" }}>{submitError}</SError>
           <SButtonPosition>
             <div>
               <Button
@@ -499,6 +505,12 @@ const SContainer = styled("div")({
   display: "flex",
   justifyContent: "center",
   margin: "60px 0",
+});
+
+const SError = styled("div")({
+  color: "#DA3737",
+  fontSize: "13px",
+  marginBottom: "5px",
 });
 
 const SFormPosition = styled("div")({
