@@ -30,15 +30,16 @@ export const FoodList: FC<Props> = (props) => {
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
+    console.log("call");
     (async () => {
       await getFoodList(props.loginUser.userId);
     })();
-    if (foodList.length === 0) {
-      setMessage("食材が登録されていません");
-    } else {
-      setMessage("");
-    }
-  }, [bestBefore, checkedFoodList, checkFlag, flag, foodList]);
+    // if (foodList.length === 0) {
+    //   setMessage("食材が登録されていません");
+    // } else {
+    //   setMessage("");
+    // }
+  }, [bestBefore, checkedFoodList, checkFlag, flag]);
 
   /**
    * 編集する.
@@ -129,7 +130,7 @@ export const FoodList: FC<Props> = (props) => {
           } else {
             return (
               <div>
-                {checkFlag && flag && (
+                {checkFlag && (
                   <Button
                     size="small"
                     style={{
@@ -171,76 +172,91 @@ export const FoodList: FC<Props> = (props) => {
           padding: "10px",
         }}
       >
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-              >
-                食材名
-              </TableCell>
-              <TableCell
-                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-                align="right"
-              >
-                数量
-              </TableCell>
-              <TableCell
-                style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-                align="right"
-              >
-                期限
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {foodList.map((food, index) => (
-              <TableRow key={index}>
-                <TableCell
-                  scope="row"
-                  style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-                >
-                  {flag && (
-                    <Checkbox
-                      style={{ padding: 0, marginRight: "10px" }}
-                      size="small"
-                      onChange={onChangeCheckBox(index)}
-                    ></Checkbox>
-                  )}
-                  {food.name}
-                </TableCell>
-                {(() => {
-                  if (food.qSelect === 1) {
-                    return (
+        {(() => {
+          if (foodList.length !== 0) {
+            return (
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                    >
+                      食材名
+                    </TableCell>
+                    <TableCell
+                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      align="right"
+                    >
+                      数量
+                    </TableCell>
+                    <TableCell
+                      style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      align="right"
+                    >
+                      期限
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {foodList.map((food, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        scope="row"
+                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
+                      >
+                        {flag && (
+                          <Checkbox
+                            style={{ padding: 0, marginRight: "10px" }}
+                            size="small"
+                            onChange={onChangeCheckBox(index)}
+                          ></Checkbox>
+                        )}
+                        {food.name}
+                      </TableCell>
+                      {(() => {
+                        if (food.qSelect === 1) {
+                          return (
+                            <TableCell
+                              align="right"
+                              style={{
+                                fontFamily: "'Zen Maru Gothic', sans-serif",
+                              }}
+                            >
+                              {food.quantity}個
+                            </TableCell>
+                          );
+                        } else {
+                          return (
+                            <TableCell
+                              align="right"
+                              style={{
+                                fontFamily: "'Zen Maru Gothic', sans-serif",
+                              }}
+                            >
+                              {food.quantity}g
+                            </TableCell>
+                          );
+                        }
+                      })()}
                       <TableCell
                         align="right"
                         style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
                       >
-                        {food.quantity}個
+                        {
+                          new Date(food.bestBefore)
+                            .toLocaleString()
+                            .split(" ")[0]
+                        }
                       </TableCell>
-                    );
-                  } else {
-                    return (
-                      <TableCell
-                        align="right"
-                        style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-                      >
-                        {food.quantity}g
-                      </TableCell>
-                    );
-                  }
-                })()}
-                <TableCell
-                  align="right"
-                  style={{ fontFamily: "'Zen Maru Gothic', sans-serif" }}
-                >
-                  {new Date(food.bestBefore).toLocaleString().split(" ")[0]}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <SMsg>{message}</SMsg>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            );
+          } else {
+            return <SMsg>食材が登録されていません</SMsg>;
+          }
+        })()}
       </TableContainer>
     </div>
   );
