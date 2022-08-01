@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useCallback, useState } from "react";
 import type { Refrigerator } from "../types/refrigerator";
+import type { RefrigeratorById } from "../types/refrigeratorById";
 
 export const useFetchRefrigerator = () => {
-  const [foodList, setFoodList] = useState<Refrigerator[]>([]);
+  const [foodList, setFoodList] = useState<RefrigeratorById[]>([]);
   const [allFoodList, setAllFoodList] = useState<Refrigerator[]>([]);
 
   const getFoodList = useCallback((userId: number) => {

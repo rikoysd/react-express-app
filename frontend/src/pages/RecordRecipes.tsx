@@ -64,7 +64,7 @@ export const RecordRecipes: FC<Props> = (props) => {
   // メニューのエラー
   const [menuError, setMenuError] = useState<string>("");
   const { menuList, getMenuList } = useFetchMenu();
-  const { mealList, getMealList } = useFetchMeal();
+  const { mealList, getMealList, allMealList, getAllMealList } = useFetchMeal();
   // 送信エラー
   const [submitError, setSubmitError] = useState<string>("");
   // エラーリスト
@@ -73,13 +73,15 @@ export const RecordRecipes: FC<Props> = (props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (props.loginUser) {
+    if (props.loginUser.userId) {
       getMenuList();
-      getMealList();
+      getAllMealList();
+      getMealList(props.loginUser.userId)
     } else {
       navigate("/login");
     }
   }, [flag, calenderDate, food]);
+
 
   /**
    * 日付を選択.
@@ -184,6 +186,20 @@ export const RecordRecipes: FC<Props> = (props) => {
       }
       mealId = Math.max(...idList) + 1;
     }
+
+    // ユーザーidと食事idを登録
+    await axios
+      .post("http://localhost:3001/api/post/user_meal", {
+        userId: props.loginUser.userId,
+        mealId: mealId,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+        setSubmitError("登録できませんでした");
+      });
 
     // 献立の登録
     await axios
@@ -463,6 +479,7 @@ export const RecordRecipes: FC<Props> = (props) => {
         calenderFlag={calenderFlag}
         calenderDate={calenderDate}
         displayMenuList={displayMenuList}
+        loginUser={props.loginUser}
       ></MenuOfDate>
     </div>
   );

@@ -15,17 +15,17 @@ export const useFetchMealById = () => {
   const [snackMenuList, setSnackMenuList] = useState<MealList[]>([]);
   const [flag, setFlag] = useState<boolean>(false);
 
-  const getMealById = useCallback(async (date: string) => {
+  const getMealById = useCallback(async (userId: number, date: string) => {
     let newMorningMenuList = [...morningMenuList];
     let newLunchMenuList = [...lunchMenuList];
     let newDinnerMenuList = [...dinnerMenuList];
     let newSnackMenuList = [...snackMenuList];
     await axios
       .post("http://localhost:3001/api/post/mealListByDate", {
+        userId: userId,
         date: date,
       })
       .then((response) => {
-        // console.log(response.data);
         setMealListById(response.data);
 
         if (response.data.length === 0) {

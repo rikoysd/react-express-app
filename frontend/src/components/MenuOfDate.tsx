@@ -3,11 +3,13 @@ import { styled } from "@mui/material/styles";
 import { format } from "date-fns";
 import { useFetchMealById } from "../hooks/useFetchMealById";
 import type { Menu } from "../types/menu";
+import type { User } from "../types/user";
 
 type Props = {
   calenderFlag: boolean;
   calenderDate: string;
   displayMenuList: Array<Menu>;
+  loginUser: User;
 };
 
 export const MenuOfDate: FC<Props> = (props) => {
@@ -29,7 +31,7 @@ export const MenuOfDate: FC<Props> = (props) => {
     const nowDateStr = format(nowDate, "yyyy/MM/dd");
     setDate(nowDateStr);
     (async () => {
-      await getMealById(nowDateStr);
+      await getMealById(props.loginUser.userId, nowDateStr);
     })();
 
     if (props.calenderDate) {
@@ -42,15 +44,13 @@ export const MenuOfDate: FC<Props> = (props) => {
       const newDate = date.split("-").join("/");
       setDisplayCalenderDate(newDate);
       (async () => {
-        await getMealById(newDate);
+        await getMealById(props.loginUser.userId, newDate);
       })();
     },
     [morningMenuList]
   );
 
-  useEffect(() => {
-    console.log("call");
-  }, [morningMenuList, props.displayMenuList, flag]);
+  useEffect(() => {}, [morningMenuList, props.displayMenuList, flag]);
 
   return (
     <div style={{ marginBottom: "60px" }}>
@@ -66,7 +66,7 @@ export const MenuOfDate: FC<Props> = (props) => {
         </SBlock2>
       </SPosition>
       <SPosition>
-        < SBlock>
+        <SBlock>
           <div>
             {(() => {
               if (mealListById.length === 0) {
@@ -78,7 +78,7 @@ export const MenuOfDate: FC<Props> = (props) => {
                       if (morningMenuList.length !== 0) {
                         return (
                           <SCategory>
-                             <h4>朝食</h4>
+                            <h4>朝食</h4>
                             <ul>
                               {morningMenuList.map((menu, index) => (
                                 <li key={index}>{menu.name}</li>
