@@ -37,7 +37,7 @@ export const MenuOfDate: FC<Props> = (props) => {
     if (props.calenderDate) {
       changeDate(props.calenderDate);
     }
-  }, [props.calenderDate, calenderFlag]);
+  }, [props.calenderDate, calenderFlag,props.displayMenuList]);
 
   const changeDate = useCallback(
     (date: string) => {
