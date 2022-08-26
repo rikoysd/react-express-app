@@ -36,8 +36,14 @@ export const RegisterFood: FC<Props> = (props) => {
   const [qSelect, setQSelect] = useState<string>("1");
   // 賞味期限・消費期限
   const [bestBefore, setBestBefore] = useState<Date | null>(new Date());
-  const { foodList, getFoodList, getAllFoodList, allFoodList } =
-    useFetchRefrigerator();
+  const {
+    foodList,
+    getFoodList,
+    getAllFoodList,
+    allFoodList,
+    getUserFoodList,
+    userFoodList,
+  } = useFetchRefrigerator();
   // 購入日エラー
   const [purchaseDateError, setPurchaseDateError] = useState<string>("");
   // 賞味期限エラー
@@ -95,7 +101,6 @@ export const RegisterFood: FC<Props> = (props) => {
    * @param e
    */
   const onChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     setQuantity(String(e.target.value));
   };
 
@@ -163,8 +168,6 @@ export const RegisterFood: FC<Props> = (props) => {
       return;
     }
 
-    console.log(allFoodList);
-
     // id採番
     let id = 0;
     let idList = [];
@@ -199,10 +202,23 @@ export const RegisterFood: FC<Props> = (props) => {
         setRegisterError("登録できませんでした");
       });
 
+    // id採番
+    let id2 = 0;
+    let idList2 = [];
+    if (userFoodList.length === 0) {
+      id2 = 1;
+    } else {
+      for (let food of userFoodList) {
+        idList2.push(food.foodId);
+      }
+      id2 = Math.max(...idList) + 1;
+    }
+
     await axios
       .post("http://localhost:3001/api/post/user_food", {
         userId: props.loginUser.userId,
         foodId: id,
+        id: id2,
       })
       .then((response) => {
         console.log(response);
@@ -218,7 +234,7 @@ export const RegisterFood: FC<Props> = (props) => {
     setQSelect("1");
     setQuantity("0");
     setBestBefore(new Date());
-  }, [purchaseDate, bestBefore, name, allFoodList]);
+  }, [purchaseDate, bestBefore, name, allFoodList, foodList, userFoodList]);
 
   return (
     <SContainer>
@@ -278,9 +294,7 @@ export const RegisterFood: FC<Props> = (props) => {
                     <OutlinedInput
                       id="outlined-basic"
                       endAdornment={
-                        <InputAdornment position="end">
-                          個
-                        </InputAdornment>
+                        <InputAdornment position="end">個</InputAdornment>
                       }
                       style={{ width: "300px" }}
                       size="small"

@@ -129,6 +129,30 @@ app.post("/api/delete/foodList", (req, res) => {
   });
 });
 
+// 食材の削除（user_foodテーブルの削除）
+app.post("/api/delete/user_food", (req, res) => {
+  const id = req.body.id;
+  const sql = "DELETE FROM user_food WHERE id=?";
+  connections.query(sql, id, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    console.log(result);
+    res.send("Delete Date!");
+  });
+});
+
+// ユーザーidとfoodIdを取得
+app.get("/api/get/user_food", (req, res) => {
+  const sqlSelect = "SELECT * FROM user_food";
+  connections.query(sqlSelect, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result);
+  });
+});
+
 // 献立の取得
 app.get("/api/get/menuList", (req, res) => {
   const sqlSelect = "SELECT * FROM menulist";
@@ -186,12 +210,14 @@ app.post("/api/post/meal_menu", (req, res) => {
 app.post("/api/post/user_food", (req, res) => {
   const userId = req.body.userId;
   const foodId = req.body.foodId;
+  const id = req.body.id;
   const sqlInsert = "INSERT INTO user_food SET ?";
   connections.query(
     sqlInsert,
     {
       userId: userId,
       foodId: foodId,
+      id: id,
     },
     (err, result) => {
       if (err) {
