@@ -2,10 +2,12 @@ import axios from "axios";
 import { useCallback, useState } from "react";
 import type { Refrigerator } from "../types/refrigerator";
 import type { RefrigeratorById } from "../types/refrigeratorById";
+import type { UserFood } from "../types/userFood";
 
 export const useFetchRefrigerator = () => {
   const [foodList, setFoodList] = useState<RefrigeratorById[]>([]);
   const [allFoodList, setAllFoodList] = useState<Refrigerator[]>([]);
+  const [userFoodList, setUserFoodList] = useState<UserFood[]>([]);
 
   const getFoodList = useCallback((userId: number) => {
     axios
@@ -21,5 +23,18 @@ export const useFetchRefrigerator = () => {
     });
   }, []);
 
-  return { foodList, getFoodList, getAllFoodList, allFoodList };
+  const getUserFoodList = useCallback(async () => {
+    axios.get("http://localhost:3001/api/get/user_food").then((response) => {
+      setUserFoodList(response.data);
+    });
+  }, []);
+
+  return {
+    foodList,
+    getFoodList,
+    getAllFoodList,
+    allFoodList,
+    getUserFoodList,
+    userFoodList,
+  };
 };

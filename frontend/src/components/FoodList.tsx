@@ -20,7 +20,8 @@ type Props = {
 
 export const FoodList: FC<Props> = (props) => {
   const { bestBefore, loginUser } = props;
-  const { foodList, getFoodList } = useFetchRefrigerator();
+  const { foodList, getFoodList, userFoodList, getUserFoodList } =
+    useFetchRefrigerator();
   // 編集ボタンのフラグ
   const [flag, setFlag] = useState<Boolean>(false);
   // チェックボックスのフラグ
@@ -32,6 +33,7 @@ export const FoodList: FC<Props> = (props) => {
   useEffect(() => {
     (async () => {
       await getFoodList(props.loginUser.userId);
+      await getUserFoodList();
     })();
   }, [bestBefore, checkedFoodList, checkFlag, flag]);
 
@@ -93,12 +95,27 @@ export const FoodList: FC<Props> = (props) => {
         .catch((err) => {
           console.log(err);
         });
+
+      for (let ob of userFoodList) {
+        if (ob.foodId === food.foodId) {
+          await axios
+            .post("http://localhost:3001/api/delete/user_food", {
+              id: ob.id,
+            })
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
     }
     // 配列を空にする
     setCheckedFoodList([]);
     setCheckFlag(false);
     setFlag(false);
-  }, [checkedFoodList]);
+  }, [checkedFoodList, userFoodList]);
 
   return (
     <div>
