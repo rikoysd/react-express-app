@@ -59,6 +59,7 @@ export const RegisterFood: FC<Props> = (props) => {
     if (props.loginUser.userId) {
       getFoodList(props.loginUser.userId);
       getAllFoodList();
+      getUserFoodList();
     } else {
       navigate("/login");
     }
@@ -93,7 +94,7 @@ export const RegisterFood: FC<Props> = (props) => {
    * @param e
    */
   const onChangeQSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    setQSelect(e.target.value);
+    setQSelect(String(e.target.value));
   };
 
   /**
@@ -209,7 +210,7 @@ export const RegisterFood: FC<Props> = (props) => {
       id2 = 1;
     } else {
       for (let food of userFoodList) {
-        idList2.push(food.foodId);
+        idList2.push(food.id);
       }
       id2 = Math.max(...idList) + 1;
     }
@@ -234,7 +235,16 @@ export const RegisterFood: FC<Props> = (props) => {
     setQSelect("1");
     setQuantity("0");
     setBestBefore(new Date());
-  }, [purchaseDate, bestBefore, name, allFoodList, foodList, userFoodList]);
+  }, [
+    purchaseDate,
+    bestBefore,
+    name,
+    allFoodList,
+    foodList,
+    userFoodList,
+    qSelect,
+    quantity,
+  ]);
 
   return (
     <SContainer>
